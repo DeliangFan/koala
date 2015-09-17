@@ -15,7 +15,17 @@ from koala.api import app
 from koala.common import service as koala_service
 from koala.openstack.common import log
 
+service_opts = [
+    cfg.StrOpt('host',
+                default='0.0.0.0',
+                help='Koala api bind ip.'),
+    cfg.IntOpt('port',
+                default=9999,
+                help='Koala api bind port.'),
+]
+
 CONF = cfg.CONF
+CONF.register_opts(service_opts)
 
 
 def main():
@@ -23,8 +33,8 @@ def main():
     koala_service.prepare_service(sys.argv)
 
     # Build and start the WSGI app
-    host = CONF.koala_api_bind_ip
-    port = CONF.koala_api_port
+    host = CONF.host
+    port = CONF.port
     wsgi = simple_server.make_server(host,
                                      port,
                                      app.VersionSelectorApplication())
