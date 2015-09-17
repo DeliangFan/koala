@@ -5,7 +5,7 @@
 # filename   : v1.py
 # created at : 2013-07-01 20:15:32
 
-from example.api.controllers.v1 import controller
+from koala.api.controllers.v1 import controller
 
 Controller = controller.Controller
 
