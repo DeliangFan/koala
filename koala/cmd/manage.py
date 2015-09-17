@@ -36,6 +36,10 @@ CONF.import_opt('connection',
 CONF.import_opt('sqlite_db',
                 'koala.openstack.common.db.sqlalchemy.session')
 
-if __name__ == "__main__":
-    cfg.CONF(sys.argv[1:], project='koala')
-    migration.db_sync()
+
+def main(*args):
+    cfg.CONF(args[1:], project='koala')
+    version = None
+    if 'db_sync' in args[0] and len(args[0]) > 2:
+        version = args[0][2]
+    migration.db_sync(version=version)

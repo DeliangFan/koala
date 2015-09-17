@@ -1,7 +1,7 @@
 d2to1>=0.2.10,<0.3
 pbr>=0.5.13,<0.6
 SQLAlchemy>=0.7.8,<0.7.99
-sqlalchemy-migrate>=0.7.2
+sqlalchemy-migrate==0.7.2
 anyjson>=0.2.4
 iso8601>=0.1.4
 netaddr>=0.7.6
