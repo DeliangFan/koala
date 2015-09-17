@@ -8,10 +8,10 @@
 
 import abc
 
-from oslo.db import concurrency
+from koala.openstack.common.db import api as db_api
 
 _BACKEND_MAPPING = {'sqlalchemy': 'koala.db.sqlalchemy.api'}
-IMPL = dbapi.DBAPI(backend_mapping=_BACKEND_MAPPING)
+IMPL = db_api.DBAPI(backend_mapping=_BACKEND_MAPPING)
 
 
 def get_instance():
