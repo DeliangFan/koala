@@ -1,11 +1,11 @@
 import pecan
 from pecan import rest
 
-from example.common.wsmeext import pecan as wsme_pecan
+from koala.common.wsmeext import pecan as wsme_pecan
 from wsme import types as wtypes
 
 
-from example.api.controllers.v1 import base
+from koala.api.controllers.v1 import base
 
 
 class Ex(base.APIBase):

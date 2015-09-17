@@ -19,15 +19,15 @@
 
 from oslo.config import cfg
 
-from example.common import paths
-from example.openstack.common.db.sqlalchemy import session as db_session
+from koala.common import paths
+from koala.openstack.common.db.sqlalchemy import session as db_session
 
 _DEFAULT_SQL_CONNECTION = 'sqlite:///' + paths.state_path_def('$sqlite_db')
 
 
 def parse_args(argv, default_config_files=None):
     db_session.set_defaults(sql_connection=_DEFAULT_SQL_CONNECTION,
-                            sqlite_db='example.sqlite')
+                            sqlite_db='koala.sqlite')
     cfg.CONF(argv[1:],
-             project='example',
+             project='koala',
              default_config_files=default_config_files)

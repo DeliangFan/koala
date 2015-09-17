@@ -21,9 +21,9 @@ import os.path
 
 from oslo.config import cfg
 
-from example.common import exception
-from example.common import utils
-from example.openstack.common import policy
+from koala.common import exception
+from koala.common import utils
+from koala.openstack.common import policy
 
 
 CONF = cfg.CONF

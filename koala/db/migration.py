@@ -20,17 +20,17 @@
 
 from oslo.config import cfg
 
-from example.common import utils
+from koala.common import utils
 
 CONF = cfg.CONF
 CONF.import_opt('backend',
-                'example.openstack.common.db.api',
+                'koala.openstack.common.db.api',
                 group='database')
 
 IMPL = utils.LazyPluggable(
         pivot='backend',
         config_group='database',
-        sqlalchemy='example.db.sqlalchemy.migration')
+        sqlalchemy='koala.db.sqlalchemy.migration')
 
 INIT_VERSION = 0
 

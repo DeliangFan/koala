@@ -25,13 +25,13 @@ path_opts = [
     cfg.StrOpt('pybasedir',
                default=os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                     '../')),
-               help='Directory where the example python module is installed'),
+               help='Directory where the koala python module is installed'),
     cfg.StrOpt('bindir',
                default='$pybasedir/bin',
-               help='Directory where example binaries are installed'),
+               help='Directory where koala binaries are installed'),
     cfg.StrOpt('state_path',
                default='$pybasedir',
-               help="Top-level directory for maintaining example's state"),
+               help="Top-level directory for maintaining koala's state"),
 ]
 
 CONF = cfg.CONF

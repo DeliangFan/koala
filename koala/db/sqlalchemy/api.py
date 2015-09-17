@@ -6,17 +6,17 @@ from oslo.config import cfg
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from example.common import exception
-from example.common import utils
-from example.db import api
-from example.db.sqlalchemy import models
-from example.openstack.common.db.sqlalchemy import session as db_session
-from example.openstack.common import log
-from example.openstack.common import uuidutils
+from koala.common import exception
+from koala.common import utils
+from koala.db import api
+from koala.db.sqlalchemy import models
+from koala.openstack.common.db.sqlalchemy import session as db_session
+from koala.openstack.common import log
+from koala.openstack.common import uuidutils
 
 CONF = cfg.CONF
 CONF.import_opt('connection',
-                'example.openstack.common.db.sqlalchemy.session',
+                'koala.openstack.common.db.sqlalchemy.session',
                 group='database')
 
 LOG = log.getLogger(__name__)

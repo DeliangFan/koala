@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-from example.tests.api import base
-from example.tests.db import utils
+from koala.tests.api import base
+from koala.tests.db import utils
 
 
 class TestEx(base.FunctionalTest):

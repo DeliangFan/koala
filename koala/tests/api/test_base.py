@@ -15,7 +15,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from example.tests.api import base
+from koala.tests.api import base
 
 
 class TestBase(base.FunctionalTest):

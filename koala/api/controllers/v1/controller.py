@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-from example.api.controllers.v1 import ex
+from koala.api.controllers.v1 import ex
 
 
 class Controller(object):

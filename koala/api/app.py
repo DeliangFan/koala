@@ -1,9 +1,9 @@
 from oslo.config import cfg
 import pecan
 
-from example.api import config
-from example.api import hooks
-from example.api import middleware
+from koala.api import config
+from koala.api import hooks
+from koala.api import middleware
 
 CONF = cfg.CONF
 

@@ -23,7 +23,7 @@
 import pecan
 import pecan.testing
 
-from example.tests import base
+from koala.tests import base
 
 
 class FunctionalTest(base.TestCase):
@@ -46,8 +46,8 @@ class FunctionalTest(base.TestCase):
 
         self.config = {
             'app': {
-                'root': 'example.api.controllers.root.RootController',
-                'modules': ['example.api'],
+                'root': 'koala.api.controllers.root.RootController',
+                'modules': ['koala.api'],
                 'static_root': '%s/public' % root_dir,
                 'template_path': '%s/api/templates' % root_dir,
                 'enable_acl': enable_acl,

@@ -6,10 +6,10 @@ import os
 possible_topdir = os.path.normpath(os.path.join(os.path.abspath(sys.argv[0]),
                                    os.pardir,
                                    os.pardir))
-if os.path.exists(os.path.join(possible_topdir, 'example', '__init__.py')):
+if os.path.exists(os.path.join(possible_topdir, 'koala', '__init__.py')):
     sys.path.insert(0, possible_topdir)
 
-import example.cmd.api
+import koala.cmd.api
 
 if __name__ == "__main__":
-    example.cmd.api.main()
+    koala.cmd.api.main()

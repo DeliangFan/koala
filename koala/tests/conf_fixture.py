@@ -19,7 +19,7 @@
 import fixtures
 from oslo.config import cfg
 
-from example.common import config
+from koala.common import config
 
 CONF = cfg.CONF
 

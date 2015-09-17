@@ -19,7 +19,7 @@
 from sqlalchemy import Table, Column, ForeignKey, MetaData
 from sqlalchemy import DateTime, Integer, String, Text
 
-from example.openstack.common import log as logging
+from koala.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)
 

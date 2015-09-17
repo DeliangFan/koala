@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-from example.tests.db import base
-from example.db import api as dbapi
-from example.common import exception
-from example.openstack.common import uuidutils
-from example.tests.db import utils
+from koala.tests.db import base
+from koala.db import api as dbapi
+from koala.common import exception
+from koala.openstack.common import uuidutils
+from koala.tests.db import utils
 
 
 class DbExTestCase(base.DbTestCase):

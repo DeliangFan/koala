@@ -1,7 +1,7 @@
 from pecan import rest
 from wsmeext import pecan
 
-from example.api.controllers import v1
+from koala.api.controllers import v1
 
 
 class RootController(rest.RestController):

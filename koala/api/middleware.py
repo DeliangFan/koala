@@ -28,8 +28,8 @@ import webob
 import webob.dec
 from xml import etree as et
 
-from example.common import exception as exc
-from example.openstack.common import log
+from koala.common import exception as exc
+from koala.openstack.common import log
 
 
 LOG = log.getLogger(__name__)

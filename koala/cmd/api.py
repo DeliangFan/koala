@@ -11,20 +11,20 @@ import sys
 from oslo.config import cfg
 from wsgiref import simple_server
 
-from example.api import app
-from example.common import service as example_service
-from example.openstack.common import log
+from koala.api import app
+from koala.common import service as koala_service
+from koala.openstack.common import log
 
 CONF = cfg.CONF
 
 
 def main():
     # Pase config file and command line options, then start logging
-    example_service.prepare_service(sys.argv)
+    koala_service.prepare_service(sys.argv)
 
     # Build and start the WSGI app
-    host = CONF.example_api_bind_ip
-    port = CONF.example_api_port
+    host = CONF.koala_api_bind_ip
+    port = CONF.koala_api_port
     wsgi = simple_server.make_server(host,
                                      port,
                                      app.VersionSelectorApplication())

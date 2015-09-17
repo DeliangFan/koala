@@ -10,7 +10,7 @@ from sqlalchemy import Column, ForeignKey
 from sqlalchemy import Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 
-from example.openstack.common.db.sqlalchemy import models
+from koala.openstack.common.db.sqlalchemy import models
 
 sql_opts = [cfg.StrOpt('mysql_engine', default='InnoDB', help='MySQL engine')]
 cfg.CONF.register_opts(sql_opts)

@@ -33,11 +33,11 @@ import testtools
 
 from oslo.config import cfg
 
-from example.common import paths
-from example.db import migration
-from example.openstack.common.db.sqlalchemy import session
-from example.openstack.common import log as logging
-from example.tests import conf_fixture
+from koala.common import paths
+from koala.db import migration
+from koala.openstack.common.db.sqlalchemy import session
+from koala.openstack.common import log as logging
+from koala.tests import conf_fixture
 
 
 test_opts = [
@@ -49,11 +49,11 @@ test_opts = [
 CONF = cfg.CONF
 CONF.register_opts(test_opts)
 CONF.import_opt('connection',
-                'example.openstack.common.db.sqlalchemy.session',
+                'koala.openstack.common.db.sqlalchemy.session',
                 group='database')
-CONF.import_opt('sqlite_db', 'example.openstack.common.db.sqlalchemy.session')
+CONF.import_opt('sqlite_db', 'koala.openstack.common.db.sqlalchemy.session')
 
-logging.setup('example')
+logging.setup('koala')
 
 _DB_CACHE = None
 

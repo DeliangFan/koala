@@ -8,9 +8,9 @@
 
 import abc
 
-from example.openstack.common.db import api as dbapi
+from oslo.db import concurrency
 
-_BACKEND_MAPPING = {'sqlalchemy': 'example.db.sqlalchemy.api'}
+_BACKEND_MAPPING = {'sqlalchemy': 'koala.db.sqlalchemy.api'}
 IMPL = dbapi.DBAPI(backend_mapping=_BACKEND_MAPPING)
 
 

@@ -22,11 +22,11 @@
 import copy
 import uuid
 
-from example.common import exception
-from example.common import policy
-from example.openstack.common import local
-from example.openstack.common import log as logging
-from example.openstack.common import timeutils
+from koala.common import exception
+from koala.common import policy
+from koala.openstack.common import local
+from koala.openstack.common import log as logging
+from koala.openstack.common import timeutils
 
 
 LOG = logging.getLogger(__name__)

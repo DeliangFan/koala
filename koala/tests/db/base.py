@@ -15,12 +15,12 @@
 
 """Example DB test base class."""
 
-from example.common import context as example_context
-from example.tests import base
+from koala.common import context as koala_context
+from koala.tests import base
 
 
 class DbTestCase(base.TestCase):
 
     def setUp(self):
         super(DbTestCase, self).setUp()
-        self.context = example_context.get_admin_context()
+        self.context = koala_context.get_admin_context()

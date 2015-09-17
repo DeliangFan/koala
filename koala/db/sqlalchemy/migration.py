@@ -22,8 +22,8 @@ import migrate
 from migrate.versioning import util as migrate_util
 import sqlalchemy
 
-from example.db import migration
-from example.openstack.common.db.sqlalchemy import session as db_session
+from koala.db import migration
+from koala.openstack.common.db.sqlalchemy import session as db_session
 
 
 @migrate_util.decorator

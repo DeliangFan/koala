@@ -6,7 +6,7 @@ from migrate.versioning.shell import main
 
 CONF = cfg.CONF
 CONF.import_opt('connection',
-                'example.openstack.common.db.sqlalchemy.session',
+                'koala.openstack.common.db.sqlalchemy.session',
                 group='database')
 
 if __name__ == '__main__':

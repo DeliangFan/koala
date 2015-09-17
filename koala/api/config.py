@@ -6,10 +6,10 @@ server = {
 
 # Pecan Application Configurations
 app = {
-    'root': 'example.api.controllers.root.RootController',
-    'modules': ['example.api'],
+    'root': 'koala.api.controllers.root.RootController',
+    'modules': ['koala.api'],
     'static_root': '%(confdir)s/public',
-    'template_path': '%(confdir)s/example/api/templates',
+    'template_path': '%(confdir)s/koala/api/templates',
     'debug': False,
 }
 

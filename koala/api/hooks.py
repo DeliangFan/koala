@@ -8,7 +8,7 @@
 from oslo.config import cfg
 from pecan import hooks
 
-from example.db import api as dbapi
+from koala.db import api as dbapi
 
 
 class ConfigHook(hooks.PecanHook):

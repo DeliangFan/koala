@@ -26,16 +26,16 @@ from oslo.config import cfg
 
 import sys
 
-from example.db import migration
+from koala.db import migration
 
 CONF = cfg.CONF
 CONF.import_opt('connection',
-                'example.openstack.common.db.sqlalchemy.session',
+                'koala.openstack.common.db.sqlalchemy.session',
                 group='database')
 
 CONF.import_opt('sqlite_db',
-                'example.openstack.common.db.sqlalchemy.session')
+                'koala.openstack.common.db.sqlalchemy.session')
 
 if __name__ == "__main__":
-    cfg.CONF(sys.argv[1:], project='example')
+    cfg.CONF(sys.argv[1:], project='koala')
     migration.db_sync()

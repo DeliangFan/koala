@@ -10,10 +10,10 @@
 __author__ = 'Jianing Yang <jianingy.yang AT gmail DOT com>'
 
 from oslo.config import cfg
-from example.openstack.common import log
+from koala.openstack.common import log
 
 
 def prepare_service(argv=[]):
 
-    cfg.CONF(argv[1:], project='example')
-    log.setup('example')
+    cfg.CONF(argv[1:], project='koala')
+    log.setup('koala')
