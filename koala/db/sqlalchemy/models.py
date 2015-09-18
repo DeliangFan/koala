@@ -43,14 +43,3 @@ class Price(Base):
     description = Column(String(length=255))
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
-
-
-class Ex(Base):
-    """Represents a ex on App."""
-
-    __tablename__ = 'exs'
-
-    id = Column(Integer, primary_key=True)
-    uuid = Column(String(36))
-    title = Column(String(255), nullable=True)
-    content = Column(Text, nullable=True)

@@ -15,7 +15,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""Policy Engine For Ex."""
+"""Policy Engine For Koala."""
 
 import os.path
 
