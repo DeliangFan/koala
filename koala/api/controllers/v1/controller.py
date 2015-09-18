@@ -35,7 +35,7 @@ class Price(base.APIBase):
             region='bj',
             created_at="2015-09-18T08:46:54.349148",
             updated_at="2015-09-19T08:46:54.349148",
-            description='Price of sata volume!'
+            description='Price of sata volume.'
         )
 
 

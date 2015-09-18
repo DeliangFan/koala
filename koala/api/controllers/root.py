@@ -10,4 +10,4 @@ class RootController(rest.RestController):
 
     @pecan.wsexpose(unicode)
     def get(self):
-        return "It works"
+        return "Koala works ^_^."

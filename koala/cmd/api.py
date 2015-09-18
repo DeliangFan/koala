@@ -3,7 +3,7 @@
 #
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-"""The Example Service API."""
+"""The Koala Service API."""
 
 import logging
 import sys
