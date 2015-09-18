@@ -25,7 +25,7 @@ class ExController(rest.RestController):
         """
         return pecan.request.dbapi.get_ex(ex)
 
-    @wsme_pecan.wsexpose([Ex], unicode)
+    @wsme_pecan.wsexpose([Ex])
     def get_all(self):
         """get all exs
 
