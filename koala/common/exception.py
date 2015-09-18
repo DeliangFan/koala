@@ -98,3 +98,8 @@ class NotFound(KoalaException):
 
 class PriceNotFound(NotFound):
     message = _("Price %(id)s could not be found.")
+
+
+class PriceIdConflict(KoalaException):
+    message = _("Price %(id)s conflict with already existed price.")
+    code = 409
