@@ -38,7 +38,7 @@ def model_query(model, *args, **kwargs):
 
 def get_backend():
     """The backend is this module itself."""
-    return Ex()
+    return Connection()
 
 
 def add_identity_filter(query, value):
@@ -57,6 +57,23 @@ def add_identity_filter(query, value):
         return query.filter_by(uuid=value)
     else:
         raise exception.InvalidIdentity(identity=value)
+
+
+class Connection(api.Connection):
+    def __init__(self):
+        pass
+
+    def price_get_by_id(self, id):
+        query = model_query(models.Price)
+        query = add_identity_filter(query, id)
+
+        try:
+            result = query.one()
+        except NoResultFound:
+            msg = "Price %s not found." % str(id)
+            raise exception.PriceNotFound(msg)
+        return result
+
 
 
 class Ex(api.Ex):

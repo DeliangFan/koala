@@ -19,6 +19,20 @@ def get_instance():
     return IMPL
 
 
+class Connection(object):
+    """Base db class."""
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def __init__(self):
+        """Constructor"""
+
+    @abc.abstractmethod
+    def price_get_by_id(self, id):
+        raise NotImplementedError('Prices not implemented')
+ 
+
 class Ex(object):
     """Base db class."""
 
