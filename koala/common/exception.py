@@ -33,8 +33,8 @@ CONF = cfg.CONF
 CONF.register_opts(exc_log_opts)
 
 
-class ExException(Exception):
-    """Base Ex Exception
+class KoalaException(Exception):
+    """Base Koala Exception
 
     To correctly use this class, inherit from it and define
     a 'message' property. That message will get printf'd
@@ -72,7 +72,7 @@ class ExException(Exception):
                     # at least get the core message out if something happened
                     message = self.message
 
-        super(ExException, self).__init__(message)
+        super(KoalaException, self).__init__(message)
 
     def format_message(self):
         if self.__class__.__name__.endswith('_Remote'):
@@ -81,20 +81,20 @@ class ExException(Exception):
             return unicode(self)
 
 
-class NotAuthorized(ExException):
+class NotAuthorized(KoalaException):
     message = _("Not authorized.")
     code = 403
 
 
-class Invalid(ExException):
+class Invalid(KoalaException):
     message = _("Unacceptable parameters.")
     code = 400
 
 
-class NotFound(ExException):
+class NotFound(KoalaException):
     message = _("Resource could not be found.")
     code = 404
 
 
-class ExNotFound(NotFound):
-    message = _("Ex %(ex)s could not be found.")
+class PriceNotFound(NotFound):
+    message = _("Price %(id)s could not be found.")

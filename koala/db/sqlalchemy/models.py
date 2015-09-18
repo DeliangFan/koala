@@ -7,7 +7,7 @@
 from oslo.config import cfg
 
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy import Integer, String, Text
+from sqlalchemy import Float, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 
 from koala.openstack.common.db.sqlalchemy import models
@@ -16,7 +16,7 @@ sql_opts = [cfg.StrOpt('mysql_engine', default='InnoDB', help='MySQL engine')]
 cfg.CONF.register_opts(sql_opts)
 
 
-class ExBase(models.TimestampMixin,
+class KoalaBase(models.TimestampMixin,
                   models.ModelBase):
 
     metadata = None
@@ -27,7 +27,20 @@ class ExBase(models.TimestampMixin,
             d[c.name] = self[c.name]
         return d
 
-Base = declarative_base(cls=ExBase)
+Base = declarative_base(cls=KoalaBase)
+
+
+class Price(Base):
+    """Price model"""
+
+    __tablename__ = 'prices'
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String(length=255))
+    resource_type = Column(String(length=255))
+    unit_price = Column(Float)
+    region = Column(String(length=255))
+    description = Column(String(length=255))
 
 
 class Ex(Base):

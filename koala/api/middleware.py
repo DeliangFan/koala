@@ -67,7 +67,7 @@ class FaultWrapperMiddleware(object):
             if ex:
                 raise ex
             return resp
-        except exc.ExException as e:
+        except exc.KoalaException as e:
             return Fault(e)
         except Exception as e:
             return Fault(e)
