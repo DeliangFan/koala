@@ -7,7 +7,7 @@
 from oslo.config import cfg
 
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy import Float, Integer, String, Text
+from sqlalchemy import DateTime, Float, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 
 from koala.openstack.common.db.sqlalchemy import models
@@ -41,6 +41,8 @@ class Price(Base):
     unit_price = Column(Float)
     region = Column(String(length=255))
     description = Column(String(length=255))
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)
 
 
 class Ex(Base):

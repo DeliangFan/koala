@@ -32,6 +32,22 @@ class Connection(object):
     def price_get_by_id(self, id):
         raise NotImplementedError('Prices not implemented')
  
+    @abc.abstractmethod
+    def price_get_all(self):
+        raise NotImplementedError('Prices not implemented')
+
+    @abc.abstractmethod
+    def price_create(self, data):
+        raise NotImplementedError('Prices not implemented')
+
+    @abc.abstractmethod
+    def price_update_by_id(self, id, value):
+        raise NotImplementedError('Prices not implemented')
+
+    @abc.abstractmethod
+    def price_delete_by_id(self, id):
+        raise NotImplementedError('Prices not implemented')
+
 
 class Ex(object):
     """Base db class."""

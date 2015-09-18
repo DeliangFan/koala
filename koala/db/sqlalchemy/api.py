@@ -64,16 +64,46 @@ class Connection(api.Connection):
         pass
 
     def price_get_by_id(self, id):
+        """Get the price by id."""
         query = model_query(models.Price)
         query = add_identity_filter(query, id)
 
-        try:
-            result = query.one()
-        except NoResultFound:
-            msg = "Price %s not found." % str(id)
-            raise exception.PriceNotFound(msg)
-        return result
+        return query.all()
 
+    def price_get_all(self):
+        """List the prices."""
+        query = model_query(models.Price)
+
+        return query.all()
+
+    def price_create(self, value):
+        #if not value.get('id'):
+        price = models.Price()
+        price.update(value)
+        price.save()
+        return price
+
+    def price_update_by_id(self, id, value):
+        session = get_session()
+
+        with session.begin():
+            query = model_query(models.Price, session=session)
+            query = add_identity_filter(query, id)
+            count = query.update(value, synchronize_session='fetch')
+            if count != 1:
+                raise exception.PriceNotFound(ex)
+            price = query.one()
+
+        return price
+
+    def price_delete_by_id(self, id):
+        session = get_session()
+        with session.begin():
+            query = model_query(models.Price, session=session)
+            query = add_identity_filter(query, id)
+            count = query.delete()
+            if count != 1:
+                raise exception.PriceNotFound(ex)
 
 
 class Ex(api.Ex):
