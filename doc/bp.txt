@@ -1,0 +1,13 @@
+bp
+1. Implement resource
+2. Implement record
+3. Implement charge
+4. Implement test
+5. Test for mysql
+6. Implement rpm
+
+
+
+1. Exception
+2. in8 
+3. Config
