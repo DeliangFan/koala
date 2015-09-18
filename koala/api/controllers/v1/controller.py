@@ -2,10 +2,13 @@
 # -*- coding: utf-8 -*-
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+import datetime
+
 import pecan
 from pecan import rest
 
 from koala.api.controllers.v1 import base
+from koala.common import exception
 from koala.common.wsmeext import pecan as wsme_pecan
 from koala.db import api as db_api
 from wsme import types as wtypes
@@ -19,6 +22,8 @@ class Price(base.APIBase):
     unit_price = float
     region = wtypes.text
     description = wtypes.text
+    created_at = datetime.datetime
+    updated_at = datetime.datetime
 
     @classmethod
     def sample(cls):
@@ -28,6 +33,8 @@ class Price(base.APIBase):
             resource_type='volume',
             unit_price=0.8,
             region='bj',
+            created_at="2015-09-18T08:46:54.349148",
+            updated_at="2015-09-19T08:46:54.349148",
             description='Price of sata volume!'
         )
 
@@ -37,34 +44,59 @@ class PricesController(rest.RestController):
     @wsme_pecan.wsexpose(Price, int)
     def get_one(self, id):
         """Get the resource price by id."""
-        prices = list(pecan.request.dbapi.price_get_by_id(id))
-        if len(prices) < 1:
-            raise NotFound
+        prices = pecan.request.dbapi.price_get_by_id(id)
+
+        if not prices:
+            msg = "Price %s not found." % str(id)
+            raise exception.PriceNotFound(msg) 
+
         return prices[0]
 
     @wsme_pecan.wsexpose([Price])
     def get_all(self):
         """Return all the price of resources."""
-        # TBD(fandeliang) Get all the price from db.
-        return [Price.sample()]
+        prices = pecan.request.dbapi.price_get_all()
+
+        return prices
 
     @wsme_pecan.wsexpose(Price, body=Price, status_code=201)
     def post(self, data):
         """Create a new resource price."""
-        # TBD(fandeliang) Create a new resource price in db.
-        return Price.sample()
+        # TBD(fandeliang) need to verify the data?
+        value = data.as_dict()
+        id = value.get('id', None)
+        if id:
+            existed_price = pecan.request.dbapi.price_get_by_id(id)
+            if existed_price:
+                # raise
+                pass
 
-    @wsme_pecan.wsexpose(Price, int, body=Price)
-    def put(self, id, data):
+        price = pecan.request.dbapi.price_create(value)
+        return price
+
+    @wsme_pecan.wsexpose(Price, body=Price)
+    def put(self, data):
         """Modify the resource price."""
         # TBD(fandeliang) Modify the resource price
-        return Price.sample()
+        value = data.as_dict()
+        id = value.get('id', None)
+        if not id:
+            msg = "Price id not found."
+            raise exception.Invalid(msg)
+        else:
+            price = pecan.request.dbapi.price_get_by_id(id)
+            if not price:
+                msg = "Price %s not found." % str(id)
+                raise exception.PriceNotFound(msg)
+
+        price = pecan.request.dbapi.price_update_by_id(id, value)
+        return price
 
     @wsme_pecan.wsexpose(None, int, status_code=204)
     def delete(self, id):
         """Delete the resource price by id."""
-        # TBD(fandeliang) Delete the resource price from db.
-        pass
+        # TBD(fandeliang) need to verify id.
+        pecan.request.dbapi.price_delete_by_id(id)
 
 
 class Controller(object):
