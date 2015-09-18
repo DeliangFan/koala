@@ -27,3 +27,4 @@ develop-eggs
 cover
 AUTORS
 ChangeLog
+koala/openstack/common/db/koala.sqlite
