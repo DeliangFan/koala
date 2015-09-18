@@ -10,7 +10,7 @@ app = {
     'modules': ['koala.api'],
     'static_root': '%(confdir)s/public',
     'template_path': '%(confdir)s/koala/api/templates',
-    'debug': False,
+    'debug': True,
 }
 
 wsme = {
