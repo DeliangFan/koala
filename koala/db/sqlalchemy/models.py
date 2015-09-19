@@ -31,7 +31,7 @@ Base = declarative_base(cls=KoalaBase)
 
 
 class Price(Base):
-    """Price model"""
+    """Price model."""
 
     __tablename__ = 'prices'
 
@@ -43,3 +43,24 @@ class Price(Base):
     description = Column(String(length=255))
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
+
+
+class Resource(Base):
+    """Resource model."""
+    __tablename__ = 'resources'
+
+    # TBD(fandeliang) uuid or id
+    id = Column(Integer, primary_key=True, nullable=False)
+    # TBD(fandeliang) need to make sure whether all the resource type are uuid. If it is uuid, set the length to 36.
+    resource_id = Column(String(length=255))
+    name = Column(String(length=255))
+    status = Column(String(length=255))
+    region = Column(String(length=255))
+    consumption = Column(Float)
+    deleted = Column(Integer)
+    tenant_id = Column(String(length=255))
+    resource_type = Column(String(length=255))
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)
+    deleted_at = Column(DateTime)
+    description = Column(String(length=255))

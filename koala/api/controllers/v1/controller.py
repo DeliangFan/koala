@@ -147,6 +147,11 @@ class Resource(base.APIBase):
 
 
 class ResourcesController(rest.RestController):
+    """Resource keeps the global information for a billing resource. Only when
+       Koala recieve an event from ceilometer, than it will generate a new
+       resource or update the existed resource. So it is only necessary to
+       expose the query APIs.
+    """
 
     @wsme_pecan.wsexpose(Resource, wtypes.text)
     def get_one(self, resource_id):
@@ -161,7 +166,9 @@ class ResourcesController(rest.RestController):
     @wsme_pecan.wsexpose([Resource])
     def get_all(self):
         """Return all the resources."""
-        # TBD(fandeliang) supports to query by tenant_id.
+        # TBD(fandeliang) supports to query resources.
+        # query with limits
+        # query by tenant_id
         resources = pecan.request.dbapi.resource_get_all()
 
         return resources
