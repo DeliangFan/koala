@@ -5,9 +5,12 @@ bp
 4. Implement test
 5. Test for mysql
 6. Implement rpm
+7. Implement for keystone
+8. Implement https
 
 
 
 1. Exception
 2. in8 
 3. Config
+4. Remove debug
