@@ -36,8 +36,8 @@ class Price(base.APIBase):
             region='bj',
             unit_price=0.8,
             resource_type='volume',
-            created_at="2015-09-18T08:46:54.349148",
-            updated_at="2015-09-19T08:46:54.349148",
+            created_at=datetime.datetime.utcnow(),
+            updated_at=datetime.datetime.utcnow(),
             description='Price of sata volume.'
         )
 
@@ -46,7 +46,7 @@ class PricesController(rest.RestController):
 
     @wsme_pecan.wsexpose(Price, int)
     def get_one(self, id):
-        """Get the resource price by id."""
+        """Get the price by id."""
         prices = pecan.request.dbapi.price_get_by_id(id)
         if not prices:
             msg = _("Price %s not found.") % str(id)
@@ -56,14 +56,14 @@ class PricesController(rest.RestController):
 
     @wsme_pecan.wsexpose([Price])
     def get_all(self):
-        """Return all the price of resources."""
+        """Return all the prices."""
         prices = pecan.request.dbapi.price_get_all()
 
         return prices
 
     @wsme_pecan.wsexpose(Price, body=Price, status_code=201)
     def post(self, data):
-        """Create a new resource price."""
+        """Create a new price."""
         value = data.as_dict()
 
         for key in REQUEIRED_PRICE_PROPERTIES:
@@ -78,14 +78,14 @@ class PricesController(rest.RestController):
                 msg = _("Price %s already exists.") % str(id)
                 raise exception.PriceIdConflict(msg)
 
-        """Create the price of the resource."""
+        """Create the new price."""
         price = pecan.request.dbapi.price_create(value)
 
         return price
 
     @wsme_pecan.wsexpose(Price, body=Price)
     def put(self, data):
-        """Modify the resource price."""
+        """Modify the price."""
         value = data.as_dict()
 
         id = value.get('id', None)
@@ -104,7 +104,7 @@ class PricesController(rest.RestController):
 
     @wsme_pecan.wsexpose(None, int, status_code=204)
     def delete(self, id):
-        """Delete the resource price by id."""
+        """Delete the price by id."""
         prices = pecan.request.dbapi.price_get_by_id(id)
         if not prices:
             msg = _("Price %s not found.") % str(id)
@@ -113,7 +113,62 @@ class PricesController(rest.RestController):
         pecan.request.dbapi.price_delete_by_id(id)
 
 
+class Resource(base.APIBase):
+    "The consumption of resource."
+    resource_id = wtypes.text
+    name = wtypes.text
+    status = wtypes.text
+    region = wtypes.text
+    consumption = float
+    deleted = int
+    tenant_id = wtypes.text
+    resource_type = wtypes.text
+    created_at = datetime.datetime
+    updated_at = datetime.datetime
+    deleted_at = datetime.datetime
+    description = wtypes.text
+
+    @classmethod
+    def sample(cls):
+        return cls(
+            resource_id="bd9431c18d694ad3803a8d4a6b89fd36",
+            name="volume01",
+            status='in-use',
+            region='bj',
+            comsumption=23.56,
+            deleted=0,
+            tenant_id='7f13f2b17917463b9ee21aa92c4b36d6',
+            resource_type='volume',
+            created_at=datetime.datetime.utcnow(),
+            updated_at=datetime.datetime.utcnow(),
+            deleted_at=None,
+            description='The resource consumption.'
+        )
+
+
+class ResourcesController(rest.RestController):
+
+    @wsme_pecan.wsexpose(Resource, wtypes.text)
+    def get_one(self, resource_id):
+        """Get the resource information by id."""
+        resources = pecan.request.dbapi.resource_get_by_id(resource_id)
+        if not resources:
+            msg = _("Resource %s not found.") % resource_id
+            raise exception.ResourceNotFound(msg)
+
+        return resources[0]
+
+    @wsme_pecan.wsexpose([Resource])
+    def get_all(self):
+        """Return all the resources."""
+        # TBD(fandeliang) supports to query by tenant_id.
+        resources = pecan.request.dbapi.resource_get_all()
+
+        return resources
+
+
 class Controller(object):
     """Version 1 API controller root."""
 
     prices = PricesController()
+    resources = ResourcesController()
