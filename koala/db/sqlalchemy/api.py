@@ -77,13 +77,15 @@ class Connection(api.Connection):
         return query.all()
 
     def price_create(self, value):
-        #if not value.get('id'):
+        """Create a new resource price."""
         price = models.Price()
         price.update(value)
         price.save()
+
         return price
 
     def price_update_by_id(self, id, value):
+        """Update the price by id."""
         session = get_session()
 
         with session.begin():
@@ -97,6 +99,7 @@ class Connection(api.Connection):
         return price
 
     def price_delete_by_id(self, id):
+        """Delete the price by id."""
         session = get_session()
         with session.begin():
             query = model_query(models.Price, session=session)
@@ -104,3 +107,16 @@ class Connection(api.Connection):
             count = query.delete()
             if count != 1:
                 raise exception.PriceNotFound(ex)
+
+    def resource_get_all(self):
+        """List all the resources by query."""
+        query = model_query(models.Resource)
+
+        return query.all()
+
+    def resource_get_by_id(self, resource_id):
+        """Get the resource by id."""
+        query = model_query(models.Resource)
+        query = query.filter(models.Resource.resource_id==resource_id)
+
+        return query.all()

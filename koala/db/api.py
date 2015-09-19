@@ -30,20 +30,28 @@ class Connection(object):
 
     @abc.abstractmethod
     def price_get_by_id(self, id):
-        raise NotImplementedError('Prices not implemented')
+        raise NotImplementedError('Prices not implemented.')
  
     @abc.abstractmethod
     def price_get_all(self):
-        raise NotImplementedError('Prices not implemented')
+        raise NotImplementedError('Prices not implemented.')
 
     @abc.abstractmethod
     def price_create(self, data):
-        raise NotImplementedError('Prices not implemented')
+        raise NotImplementedError('Prices not implemented.')
 
     @abc.abstractmethod
     def price_update_by_id(self, id, value):
-        raise NotImplementedError('Prices not implemented')
+        raise NotImplementedError('Prices not implemented.')
 
     @abc.abstractmethod
     def price_delete_by_id(self, id):
-        raise NotImplementedError('Prices not implemented')
+        raise NotImplementedError('Prices not implemented.')
+
+    @abc.abstractmethod
+    def resource_get_all(self):
+        raise NotImplementedError('Resources not implemented.')
+
+    @abc.abstractmethod
+    def resource_get_by_id(self, resource_id):
+        raise NotImplementedError('Resources not implemented.')
