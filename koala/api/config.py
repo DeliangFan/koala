@@ -10,11 +10,11 @@ app = {
     'modules': ['koala.api'],
     'static_root': '%(confdir)s/public',
     'template_path': '%(confdir)s/koala/api/templates',
-    'debug': True,
+    'debug': False,
 }
 
 wsme = {
-    'debug': True
+    'debug': False
 }
 
 # Custom Configurations must be in Python dictionary format::
