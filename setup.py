@@ -17,7 +17,7 @@
 import setuptools
 
 
-project = 'example'
+project = 'koala'
 
 setuptools.setup(
     name=project,
