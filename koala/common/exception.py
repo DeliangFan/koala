@@ -107,3 +107,7 @@ class PriceIdConflict(KoalaException):
 
 class ResourceNotFound(NotFound):
     message = _("Resource %(id)s could not be found.")
+
+
+class RecordNotFound(NotFound):
+    message = _("Records of resource %(id)s could not be found.")

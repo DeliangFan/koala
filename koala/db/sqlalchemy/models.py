@@ -64,3 +64,18 @@ class Resource(Base):
     updated_at = Column(DateTime)
     deleted_at = Column(DateTime)
     description = Column(String(length=255))
+
+
+class Record(Base):
+    """Record model."""
+    __tablename__ = 'records'
+    id = Column(Integer, primary_key=True, nullable=False)
+    resource_id = Column(String(length=255))
+    consumption = Column(Float)
+    unit_price = Column(Float)
+    start_at = Column(DateTime)
+    end_at = Column(DateTime)
+    description = Column(String(length=255))
+    # TBD(fandeliang) created_at and updated_at is not needed.
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)

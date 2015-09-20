@@ -37,13 +37,15 @@ resources = Table('resources', meta,
 
 records = Table('records', meta,
         Column('id', Integer, primary_key=True, nullable=False),
-        Column('resource_id', String(length=36)),
-        Column('resource_status', String(length=255)),
+        Column('resource_id', String(length=255)),
+        Column('consumption', Float),
+        Column('unit_price', Float),
         Column('start_at', DateTime),
         Column('end_at', DateTime),
-        Column('unit_price', Float),
-        Column('consumption', Float),
         Column('description', String(length=255)),
+        # TBD(fandeliang) created_at and updated_at is not needed.
+        Column('created_at', DateTime),
+        Column('updated_at', DateTime),
         mysql_engine='InnoDB',
         mysql_charset='utf8'
     )

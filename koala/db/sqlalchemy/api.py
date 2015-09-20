@@ -70,7 +70,7 @@ class Connection(api.Connection):
 
         return query.all()
 
-    def price_get_all(self):
+    def prices_get_all(self):
         """List the prices."""
         query = model_query(models.Price)
 
@@ -108,7 +108,7 @@ class Connection(api.Connection):
             if count != 1:
                 raise exception.PriceNotFound(ex)
 
-    def resource_get_all(self):
+    def resources_get_all(self):
         """List all the resources by query."""
         query = model_query(models.Resource)
 
@@ -118,5 +118,12 @@ class Connection(api.Connection):
         """Get the resource by id."""
         query = model_query(models.Resource)
         query = query.filter(models.Resource.resource_id==resource_id)
+
+        return query.all()
+
+    def records_get_by_resource_id(self, resource_id):
+        """List the records by resource id."""
+        query = model_query(models.Record)
+        query = query.filter(models.Record.resource_id==resource_id)
 
         return query.all()

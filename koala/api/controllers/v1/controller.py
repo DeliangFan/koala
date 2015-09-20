@@ -57,7 +57,7 @@ class PricesController(rest.RestController):
     @wsme_pecan.wsexpose([Price])
     def get_all(self):
         """Return all the prices."""
-        prices = pecan.request.dbapi.price_get_all()
+        prices = pecan.request.dbapi.prices_get_all()
 
         return prices
 
@@ -135,7 +135,7 @@ class Resource(base.APIBase):
             name="volume01",
             status='in-use',
             region='bj',
-            comsumption=23.56,
+            consumption=23.56,
             deleted=0,
             tenant_id='7f13f2b17917463b9ee21aa92c4b36d6',
             resource_type='volume',
@@ -169,9 +169,49 @@ class ResourcesController(rest.RestController):
         # TBD(fandeliang) supports to query resources.
         # query with limits
         # query by tenant_id
-        resources = pecan.request.dbapi.resource_get_all()
+        resources = pecan.request.dbapi.resources_get_all()
 
         return resources
+
+
+class Record(base.APIBase):
+    "The consumption of resource."
+    resource_id = wtypes.text
+    consumption = float
+    unit_price = float
+    start_at = datetime.datetime
+    end_at = datetime.datetime
+    description = wtypes.text
+
+    @classmethod
+    def sample(cls):
+        start_time = datetime.datetime.utcnow()
+        return cls(
+            resource_id="bd9431c18d694ad3803a8d4a6b89fd36",
+            consumption=0.8,
+            unit_price=0.8,
+            start_at=start_time,
+            end_at=start_time.replace(hour=start_time.hour+1),
+            description='Hourly billing.'
+        )
+
+
+class RecordsController(rest.RestController):
+    """Record keeps the hourly billing records for the resource. Only when
+       Koala recieve an event from ceilometer, than it will generate a new
+       records. So it is only necessary to expose the query API.
+    """
+    # TBD(fandeliang) should implement get_all?
+
+    @wsme_pecan.wsexpose([Record], wtypes.text)
+    def get_one(self, resource_id):
+        """In fact, we will list all the records by resource_id."""
+        records = pecan.request.dbapi.records_get_by_resource_id(resource_id)
+        if not records:
+            msg = _("Records of resource %s not found.") % resource_id
+            raise exception.RecordNotFound(msg)
+
+        return records
 
 
 class Controller(object):
@@ -179,3 +219,4 @@ class Controller(object):
 
     prices = PricesController()
     resources = ResourcesController()
+    records = RecordsController()
