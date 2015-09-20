@@ -14,16 +14,22 @@ from koala.db import api as db_api
 from koala.openstack.common.gettextutils import _
 from wsme import types as wtypes
 
-REQUEIRED_PRICE_PROPERTIES = ('name', 'region', 'resource_type', 'unit_price')
+REQUIRED_PRICE_PROPERTIES = ('name', 'region', 'resource_type', 'unit_price')
+REQUIRED_EVENT_PROPERTIES = ('resource_id', 'resource_type', 'event_type',
+                              'event_time', 'region', 'tenant_id', 'content')
+RESOURCE_AFFINITY_TYPES = ('instance', 'volume', 'router', 'floating_ip',
+                           'instance_snapshot', 'volume_snapshot', 'alarm',
+                           'load_balancer')
 
 
 class Price(base.APIBase):
-    "The id of the resource price."
+    """The id of the resource price."""
     id = int
     unit_price = float
     name = wtypes.text
     region = wtypes.text
     description = wtypes.text
+    # NOTE(fandeliang) we should take care of the volume, ssd or sata
     resource_type = wtypes.text
     created_at = datetime.datetime
     updated_at = datetime.datetime
@@ -32,13 +38,13 @@ class Price(base.APIBase):
     def sample(cls):
         return cls(
             id=1,
-            name='sata_disk',
+            name='disk',
             region='bj',
             unit_price=0.8,
             resource_type='volume',
             created_at=datetime.datetime.utcnow(),
             updated_at=datetime.datetime.utcnow(),
-            description='Price of sata volume.'
+            description='Price of volume.'
         )
 
 
@@ -66,7 +72,7 @@ class PricesController(rest.RestController):
         """Create a new price."""
         value = data.as_dict()
 
-        for key in REQUEIRED_PRICE_PROPERTIES:
+        for key in REQUIRED_PRICE_PROPERTIES:
             if key not in value:
                 msg = _("Property %s is required by the price.") % key
                 raise exception.Invalid(msg)
@@ -131,8 +137,8 @@ class Resource(base.APIBase):
     @classmethod
     def sample(cls):
         return cls(
-            resource_id="bd9431c18d694ad3803a8d4a6b89fd36",
-            name="volume01",
+            resource_id='bd9431c18d694ad3803a8d4a6b89fd36',
+            name='volume01',
             status='in-use',
             region='bj',
             consumption=23.56,
@@ -186,8 +192,9 @@ class Record(base.APIBase):
     @classmethod
     def sample(cls):
         start_time = datetime.datetime.utcnow()
+
         return cls(
-            resource_id="bd9431c18d694ad3803a8d4a6b89fd36",
+            resource_id='bd9431c18d694ad3803a8d4a6b89fd36',
             consumption=0.8,
             unit_price=0.8,
             start_at=start_time,
@@ -214,9 +221,70 @@ class RecordsController(rest.RestController):
         return records
 
 
+class Event(base.APIBase):
+    "The event recieved from ceilometer."
+    resource_id = wtypes.text
+    resource_name = wtypes.text
+    resource_type = wtypes.text
+    event_type = wtypes.text
+    event_time = datetime.datetime
+    tenant_id = wtypes.text
+    region = wtypes.text
+    # Different resources have different content, for instance,
+    # the content contains information of vcpu, ram and disk.
+    content = None
+
+    @classmethod
+    def sample(cls):
+        return cls(
+            resource_id='bd9431c18d694ad3803a8d4a6b89fd36',
+            resource_name='volume01',
+            resource_type='volume',
+            event_type='create',
+            event_time=datetime.datetime.utcnow()
+            tenant_id='7f13f2b17917463b9ee21aa92c4b36d6',
+            region='bj',
+            content={'size': 10}
+        )
+
+
+class EventsController(rest.RestController):
+    """Recieve events from ceilometer.
+
+       Once a new event comes, we will analyse it and generate the
+       billing record and store the result to database.
+
+       Note: we only need to expose post API.
+    """
+
+    # NOTE(fandeliang) should we implement events API which is able
+    # to recieve event list.
+    # And how to implement the API?
+
+    def check_event_data(self, data):
+        value = data.as_dict()
+
+        for key in REQUIRED_EVENT_PROPERTIES:
+            if key not in value:
+                msg = _("Property %s is required by the event.") % key
+                raise exception.Invalid(msg)
+
+        if value['resource_type'] not in RESOURCE_AFFINITY_TYPES:
+            msg = _("Resource type must be in %s") % str(REQUIRED_EVENT_PROPERTIES)
+            raise exception.ResourceTypeInvalid(msg)
+
+    @wsme_pecan.wsexpose(None, body=Event, status_code=204)
+    def post(self, data):
+        """Check the recieved event carefully and then use it for billing."""
+
+        self.check_event_data(data)
+        #self.billing()
+
+
 class Controller(object):
     """Version 1 API controller root."""
 
     prices = PricesController()
     resources = ResourcesController()
     records = RecordsController()
+    events = EventsController()
