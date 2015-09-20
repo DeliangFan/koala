@@ -109,5 +109,9 @@ class ResourceNotFound(NotFound):
     message = _("Resource %(id)s could not be found.")
 
 
+class ResourceTypeInvalid(Invalid):
+    message = _("Invalid Resource type.")
+
+
 class RecordNotFound(NotFound):
     message = _("Records of resource %(id)s could not be found.")
