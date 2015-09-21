@@ -137,7 +137,7 @@ class Resource(base.APIBase):
     @classmethod
     def sample(cls):
         return cls(
-            resource_id='bd9431c18d694ad3803a8d4a6b89fd36',
+            resource_id='ea75b3e1-e3b6-4777-bc4e-ef6ea414ace2',
             name='volume01',
             status='in-use',
             region='bj',
@@ -194,7 +194,7 @@ class Record(base.APIBase):
         start_time = datetime.datetime.utcnow()
 
         return cls(
-            resource_id='bd9431c18d694ad3803a8d4a6b89fd36',
+            resource_id='ea75b3e1-e3b6-4777-bc4e-ef6ea414ace2',
             consumption=0.8,
             unit_price=0.8,
             start_at=start_time,
@@ -221,6 +221,19 @@ class RecordsController(rest.RestController):
         return records
 
 
+class Content(base.APIBase):
+    # Instance content.
+    vcpu = int
+    ram = int
+    disk = int
+    flavor = wtypes.text
+    # Volume, volume snapshot, image and instance snapshot content.
+    size = int
+    # Floating IP content, you can billing floating IP by bandwidth or traffic.
+    bandwidth = int
+    traffic = int
+
+
 class Event(base.APIBase):
     "The event recieved from ceilometer."
     resource_id = wtypes.text
@@ -232,16 +245,16 @@ class Event(base.APIBase):
     region = wtypes.text
     # Different resources have different content, for instance,
     # the content contains information of vcpu, ram and disk.
-    content = None
+    content = Content
 
     @classmethod
     def sample(cls):
         return cls(
-            resource_id='bd9431c18d694ad3803a8d4a6b89fd36',
+            resource_id='ea75b3e1-e3b6-4777-bc4e-ef6ea414ace2',
             resource_name='volume01',
             resource_type='volume',
             event_type='create',
-            event_time=datetime.datetime.utcnow()
+            event_time=datetime.datetime.utcnow(),
             tenant_id='7f13f2b17917463b9ee21aa92c4b36d6',
             region='bj',
             content={'size': 10}
