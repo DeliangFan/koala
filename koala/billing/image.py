@@ -17,8 +17,8 @@ from koala.billing import base
 from koala.openstack.common.gettextutils import _
 
 
-class LoadBalancer(base.Resource):
+class Image(base.Resource):
     def __init__(self, value):
-        super(LoadBalancer, self).__init__(value)
-        msg = _("Load balancer billing system has not been implemented.")
+        super(Image, self).__init__(value)
+        msg = _("Image billing system has not been implemented.")
         raise NotImplementedError(msg)

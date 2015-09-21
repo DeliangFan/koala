@@ -12,6 +12,7 @@ from koala.common import exception
 from koala.common.wsmeext import pecan as wsme_pecan
 from koala.db import api as db_api
 from koala.openstack.common.gettextutils import _
+from koala.openstack.common import importutils
 from wsme import types as wtypes
 
 REQUIRED_PRICE_PROPERTIES = ('name', 'region', 'resource_type', 'unit_price')
@@ -19,7 +20,17 @@ REQUIRED_EVENT_PROPERTIES = ('resource_id', 'resource_type', 'event_type',
                               'event_time', 'region', 'tenant_id', 'content')
 RESOURCE_AFFINITY_TYPES = ('instance', 'volume', 'router', 'floating_ip',
                            'instance_snapshot', 'volume_snapshot', 'alarm',
-                           'load_balancer')
+                           'load_balancer', 'image')
+RESOURCE_CLASS_MAP = {
+    'instance': 'instance.Instance',
+    'image': 'image.Image',
+    'volume': 'volume.Volume',
+    'router': 'router.Router',
+    'alarm': 'alarm.Alarm',
+    'floating_ip': 'floating_ip.FloatingIP',
+    'load_balancer': 'load_balancer.LoadBalancer',
+    'volume_snapshot': 'volume_snapshot.VolumeSnapshot',
+    'instance_snapshot': 'instance_snapshot.InstanceSnapshot'}
 
 
 class Price(base.APIBase):
@@ -122,7 +133,7 @@ class PricesController(rest.RestController):
 class Resource(base.APIBase):
     "The consumption of resource."
     resource_id = wtypes.text
-    name = wtypes.text
+    resource_name = wtypes.text
     status = wtypes.text
     region = wtypes.text
     consumption = float
@@ -138,7 +149,7 @@ class Resource(base.APIBase):
     def sample(cls):
         return cls(
             resource_id='ea75b3e1-e3b6-4777-bc4e-ef6ea414ace2',
-            name='volume01',
+            resource_name='volume01',
             status='in-use',
             region='bj',
             consumption=23.56,
@@ -233,6 +244,14 @@ class Content(base.APIBase):
     bandwidth = int
     traffic = int
 
+    @classmethod
+    def sample(cls):
+        return cls(
+            vcpu=2,
+            ram=4096,
+            disk=20
+        )
+
 
 class Event(base.APIBase):
     "The event recieved from ceilometer."
@@ -286,12 +305,21 @@ class EventsController(rest.RestController):
             msg = _("Resource type must be in %s") % str(REQUIRED_EVENT_PROPERTIES)
             raise exception.ResourceTypeInvalid(msg)
 
+        return value
+
+    def init_resource(self, value):
+        path = 'koala.billing.' + RESOURCE_CLASS_MAP[value.get('resource_type')]
+        resource = importutils.import_object(path, value)
+
+        return resource
+
     @wsme_pecan.wsexpose(None, body=Event, status_code=204)
     def post(self, data):
         """Check the recieved event carefully and then use it for billing."""
 
-        self.check_event_data(data)
-        #self.billing()
+        value = self.check_event_data(data)
+        resource = self.init_resource(value)
+        resource.billing_resource()
 
 
 class Controller(object):

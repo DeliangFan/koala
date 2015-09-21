@@ -53,7 +53,7 @@ class Resource(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     # TBD(fandeliang) need to make sure whether all the resource type are uuid. If it is uuid, set the length to 36.
     resource_id = Column(String(length=255))
-    name = Column(String(length=255))
+    resource_name = Column(String(length=255))
     status = Column(String(length=255))
     region = Column(String(length=255))
     consumption = Column(Float)

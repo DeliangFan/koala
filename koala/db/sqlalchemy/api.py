@@ -93,7 +93,8 @@ class Connection(api.Connection):
             query = add_identity_filter(query, id)
             count = query.update(value, synchronize_session='fetch')
             if count != 1:
-                raise exception.PriceNotFound(ex)
+                msg = _("Price %s not found.") % str(id)
+                raise exception.PriceNotFound(msg)
             price = query.one()
 
         return price
@@ -120,6 +121,30 @@ class Connection(api.Connection):
         query = query.filter(models.Resource.resource_id==resource_id)
 
         return query.all()
+
+    def resource_create(self, value):
+        """Create a new resource."""
+        resource = models.Resource()
+        resource.update(value)
+        resource.save()
+
+        return resource
+
+    def resource_update_by_id(self, resource_id, value):
+        """Update the resource by id."""
+        session = get_session()
+
+        with session.begin():
+            query = model_query(models.Price, session=session)
+            query = add_identity_filter(query, resource_id)
+            count = query.update(value, synchronize_session='fetch')
+
+            if count !=1:
+                msg = _("Resource %s not found.") % resource_id
+                raise exception.ResourceNotFound()
+
+            resource = query.one()
+        return resource
 
     def records_get_by_resource_id(self, resource_id):
         """List the records by resource id."""
