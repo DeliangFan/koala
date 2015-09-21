@@ -37,7 +37,7 @@ class Connection(object):
         raise NotImplementedError('Prices not implemented.')
 
     @abc.abstractmethod
-    def price_create(self, data):
+    def price_create(self, value):
         raise NotImplementedError('Prices not implemented.')
 
     @abc.abstractmethod
@@ -54,6 +54,14 @@ class Connection(object):
 
     @abc.abstractmethod
     def resource_get_by_id(self, resource_id):
+        raise NotImplementedError('Resources not implemented.')
+
+    @abc.abstractmethod
+    def resource_create(self, value):
+        raise NotImplementedError('Resources not implemented.')
+
+    @abc.abstractmethod
+    def resource_update_by_id(self, resource_id, value):
         raise NotImplementedError('Resources not implemented.')
 
     @abc.abstractmethod

@@ -115,3 +115,15 @@ class ResourceTypeInvalid(Invalid):
 
 class RecordNotFound(NotFound):
     message = _("Records of resource %(id)s could not be found.")
+
+
+class EventTypeInvalid(Invalid):
+    message = _("Invalid event type.")
+
+
+class VolumeContentInvalid(Invalid):
+    message = _("Invalid volume content.")
+
+
+class VolumeSizeInvalid(Invalid):
+    message = _("Volume size must be positive integer.")
