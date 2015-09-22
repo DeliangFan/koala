@@ -31,7 +31,11 @@ class Connection(object):
     @abc.abstractmethod
     def price_get_by_id(self, id):
         raise NotImplementedError('Prices not implemented.')
- 
+
+    @abc.abstractmethod
+    def price_get_by_resource(self, resource_type, region):
+        raise NotImplementedError('Prices not implemented.')
+
     @abc.abstractmethod
     def prices_get_all(self):
         raise NotImplementedError('Prices not implemented.')
@@ -66,4 +70,12 @@ class Connection(object):
 
     @abc.abstractmethod
     def records_get_by_resource_id(self, resource_id):
+        raise NotImplementedError('Records not implemented.')
+
+    @abc.abstractmethod
+    def record_get_by_last(self, resource_id):
+        raise NotImplementedError('Records not implemented.')
+
+    @abc.abstractmethod
+    def record_create(self, value):
         raise NotImplementedError('Records not implemented.')

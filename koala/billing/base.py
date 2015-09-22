@@ -13,8 +13,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from koala.common import exception
 from koala.db.sqlalchemy import api as dbapi
 from koala.openstack.common.gettextutils import _
+from koala.openstack.common import jsonutils
 
 
 class Resource(object):
@@ -50,12 +52,27 @@ class Resource(object):
         msg = _("Billing resource has not been implemented.")
         raise NotImplementedError(msg)
 
+    def get_price(self):
+        """Get the resource type by resource type and region."""
+        price = self.db_api.price_get_by_resource(self.resource_type,
+                                                    self.region)
+
+        if not price:
+            msg = _("Price of %s in region %s not found.") % (
+                self.resource_type, self.region)
+            raise exception.PriceNotFound(msg)
+
+        return price.unit_price
+
     def get_resource(self):
         """Get resource from database."""
 
         resources = self.db_api.resource_get_by_id(self.resource_id)
         if resources:
             resource = resources[0]
+            if resource.deleted:
+                msg = _("Resource %s has been deleted.") % self.resource_id
+                raise exception.ResourceDeleted(msg)
         else:
             resource = None
 
@@ -71,8 +88,11 @@ class Resource(object):
         res['tenant_id'] = self.tenant_id
         res['resource_type'] = self.resource_type
         res['created_at'] = self.event_time
+
+        # Convert json to string.
+        res['content'] = jsonutils.dumps(self.content)
         
-        description = self.resource_type + " has been " + self.event_type
+        description = "Start billing " + self.resource_type
         res['description'] = description
 
         """Create the new resource."""
@@ -88,3 +108,45 @@ class Resource(object):
         """
 
         self.db_api.resource_update_by_id(self.resource_id, value)
+
+    def get_last_record(self):
+        """Get the last record of the resource."""
+        record = self.db_api.record_get_by_last(self.resource_id)
+
+        return record
+
+    def create_record(self, value):
+        """Create a new record of the resource."""
+
+        if 'resource_id' not in value:
+            value['resource_id'] = self.resource_id
+
+        if 'end_at' not in value:
+            value['end_at'] = self.event_time
+
+        # Unit_price, consumption and description is not easye to get from
+        # db, so it must be calculate carefully in each resource.
+        for key in ('unit_price', 'consumption', 'description', 'start_at'):
+            if key not in value:
+                msg = _("Property %s is needed to generate record.")
+                raise RecordValueInvalid(msg)
+
+        self.db_api.record_create(value)
+
+    def get_start_at(self):
+        """Get the start billing time."""
+        last_record = self.get_last_record()
+
+        # If the record is None, it means this is the second event for the
+        # resource, so we need the get the start time from resource.
+        if not last_record:
+            resource = self.get_resource()
+            start_at = resource.created_at
+        else:
+            start_at = last_record.end_at
+
+        if start_at >= self.event_time:
+            msg = _("Event time means that it's a privious event.")
+            raise exception.EventTimeInvalid(msg)
+
+        return start_at

@@ -56,6 +56,7 @@ class Resource(Base):
     resource_name = Column(String(length=255))
     status = Column(String(length=255))
     region = Column(String(length=255))
+    content = Column(String(length=255))
     consumption = Column(Float)
     deleted = Column(Integer)
     tenant_id = Column(String(length=255))
