@@ -13,6 +13,7 @@ from koala.db.sqlalchemy import models
 from koala.openstack.common.db.sqlalchemy import session as db_session
 from koala.openstack.common import log
 from koala.openstack.common import uuidutils
+from koala.openstack.common.gettextutils import _
 
 CONF = cfg.CONF
 CONF.import_opt('connection',
@@ -69,6 +70,20 @@ class Connection(api.Connection):
         query = add_identity_filter(query, id)
 
         return query.all()
+
+    def price_get_by_resource(self, resource_type, region):
+        """Get the price by resource type and region."""
+        query = model_query(models.Price)
+        query = query.filter(models.Price.resource_type==resource_type)
+        query = query.filter(models.Price.region==region)
+
+        prices = query.all()
+        if prices:
+            price = prices[0]
+        else:
+            price = None
+
+        return price
 
     def prices_get_all(self):
         """List the prices."""
@@ -135,8 +150,8 @@ class Connection(api.Connection):
         session = get_session()
 
         with session.begin():
-            query = model_query(models.Price, session=session)
-            query = add_identity_filter(query, resource_id)
+            query = model_query(models.Resource, session=session)
+            query = query.filter(models.Resource.resource_id==resource_id)
             count = query.update(value, synchronize_session='fetch')
 
             if count !=1:
@@ -152,3 +167,25 @@ class Connection(api.Connection):
         query = query.filter(models.Record.resource_id==resource_id)
 
         return query.all()
+
+    def record_get_by_last(self, resource_id):
+        """Get the last record by resource id."""
+        query = model_query(models.Record)
+        query = query.filter(models.Record.resource_id==resource_id)
+
+        # Get the lastest record by record end_at timestamp.
+        resource = query.order_by(models.Record.end_at.desc(),
+                                  models.Record.id.desc()).limit(1).all()
+
+        if not resource:
+            return None
+
+        return resource[0]
+
+    def record_create(self, value):
+        """Create a new record."""
+        record = models.Record()
+        record.update(value)
+        record.save()
+
+        return record

@@ -113,12 +113,28 @@ class ResourceTypeInvalid(Invalid):
     message = _("Invalid Resource type.")
 
 
+class ResourceDeleted(Invalid):
+    message = _("Resource has been deleted.")
+
+
 class RecordNotFound(NotFound):
     message = _("Records of resource %(id)s could not be found.")
 
 
+class RecordValueInvalid(NotFound):
+    message = _("Invalid value to generate record.")
+
+
 class EventTypeInvalid(Invalid):
     message = _("Invalid event type.")
+
+
+class EventDuplicate(Invalid):
+    message = _("Duplicate event message.")
+
+
+class EventTimeInvalid(Invalid):
+    message = _("Invalid event time.")
 
 
 class VolumeContentInvalid(Invalid):
