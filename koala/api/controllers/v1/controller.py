@@ -42,8 +42,6 @@ class Price(base.APIBase):
     description = wtypes.text
     # NOTE(fandeliang) we should take care of the volume, ssd or sata
     resource_type = wtypes.text
-    created_at = datetime.datetime
-    updated_at = datetime.datetime
 
     @classmethod
     def sample(cls):
@@ -53,8 +51,6 @@ class Price(base.APIBase):
             region='bj',
             unit_price=0.8,
             resource_type='volume',
-            created_at=datetime.datetime.utcnow(),
-            updated_at=datetime.datetime.utcnow(),
             description='Price of volume.'
         )
 
