@@ -150,6 +150,17 @@ class Resource(object):
 
         return start_at
 
+    def get_total_seconds(start_at, end_at):
+        """What the fuck.
+
+        datetime.deltatime does not have attribute total_seconds in python 2.6.
+        """
+        time_delta = end_at - start_at
+        if hasattr(time_delta, 'total_seconds'):
+            return time_delta.total_seconds()
+        else:
+            return time_delta.seconds + time_delta.days * 3600 * 24
+
     def billing_resource(self):
         """Billing the resource and generate billing records.
 
