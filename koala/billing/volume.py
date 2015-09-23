@@ -40,7 +40,6 @@ class Volume(base.Resource):
             raise exception.EventTypeInvalid(msg)
 
     def check_content(self):
-        self.size = self.content.get('size', None)
 
         if self.size is None:
             msg = _("Volume size not specified in the content.")
@@ -49,34 +48,6 @@ class Volume(base.Resource):
         if self.size < 1:
             msg = _("Volume size must be positive integer.")
             raise exception.VolumeSizeInvalid(msg)
-
-    def billing_resource(self):
-        """Billing resource
-
-           This is the mainly function for billing a resource. When the new
-           event comes, we check whether the resource is a new or not. If
-           it's a new resource, we need to generate a resource corresponding,
-           otherwise, we just to calculate the consumption and update the
-           billing records.
-        """
-        if self.get_resource():
-            self.calculate_consumption()
-        else:
-            # NOTE(fandeliang) we still need to check the event type. if the
-            # event type is not create, it means that some messages ahead
-            # have lost.
-            if self.event_type == 'create':
-                self.create_resource()
-            elif self.event_type == 'delete':
-                # If we recieve a delete event with not resource records, just
-                # ignore it.
-                # TBD(fandeliang) Log.warning(_("Messaging missing"))
-                pass
-            else:
-                # If we recieve a resize or exists event, create the new
-                # resource and treat it as the create time.
-                # TBD(fandeliang) Log.warning(_("Messaging missing"))
-                self.create_resource()
 
     def calculate_consumption(self):
         """Calculate the consumption by deta time and price."""
@@ -97,20 +68,19 @@ class Volume(base.Resource):
             # for a resize event.
             pre_content = jsonutils.loads(resource.content)
             pre_size = pre_content.get('size', 0)
-            consumption = unit_price * deta_time * self.size
             updated_resource['updated_at'] = self.event_time
             updated_resource['content'] = jsonutils.dumps(self.content)
 
         elif self.event_type == 'exists':
-            consumption = unit_price * deta_time * self.size
             record_description = "Audit billing"
 
         elif self.event_type == 'delete':
-            consumption = unit_price * deta_time * self.size
             updated_resource['deleted'] = 1
             updated_resource['deleted_at'] = self.event_time
             updated_resource['status'] = 'delete'
-            updated_resource['description'] = "Resource has been deleted"
+            updated_resource['description'] = "Volume has been deleted"
+
+        consumption = unit_price * deta_time * self.size
 
         # Format record information and store it to database.
         record['resource_id'] = self.resource_id
