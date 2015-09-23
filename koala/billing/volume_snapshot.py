@@ -17,7 +17,7 @@ from koala.billing import base
 from koala.common import exception
 from koala.openstack.common.gettextutils import _
 
-VOLUME_SNAPSHOT_EVENT_TYPES = ('create', 'delete', 'exists')
+EVENT_TYPES = ('create', 'delete', 'exists')
 
 
 class VolumeSnapshot(base.Resource):
@@ -26,17 +26,12 @@ class VolumeSnapshot(base.Resource):
     # NOTE(fandeliang) How to support multi volume snapshots, such as both
     # sata and ssd volume snapshot.
     def __init__(self, value):
+        self.EVENT_TYPES = EVENT_TYPES
+
         super(VolumeSnapshot, self).__init__(value)
 
         self.size = self.content.get('size', None)
-        self.check_event_type()
         self.check_content()
-
-    def check_event_type(self):
-        if self.event_type not in VOLUME_SNAPSHOT_EVENT_TYPES:
-            msg = _("Volume snapshot event type must be in %s.") % str(
-                VOLUME_SNAPSHOT_EVENT_TYPES)
-            raise exception.EventTypeInvalid(msg)
 
     def check_content(self):
         if self.size is None:
@@ -52,7 +47,7 @@ class VolumeSnapshot(base.Resource):
         resource = self.get_resource()
         unit_price = self.get_price()
         start_at = self.get_start_at()
-        deta_time = (self.event_time - start_at).seconds / 3600.0
+        deta_time = (self.event_time - start_at).total_seconds() / 3600.0
 
         record = {}
         updated_resource = {}

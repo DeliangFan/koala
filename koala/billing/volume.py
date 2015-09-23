@@ -19,7 +19,7 @@ from koala.common import exception
 from koala.openstack.common.gettextutils import _
 from koala.openstack.common import jsonutils
 
-VOLUME_EVENT_TYPES = ('create', 'delete', 'resize', 'exists')
+EVENT_TYPES = ('create', 'delete', 'resize', 'exists')
 
 
 class Volume(base.Resource):
@@ -28,16 +28,12 @@ class Volume(base.Resource):
     # ssd and sata.
 
     def __init__(self, value):
+        self.EVENT_TYPES = EVENT_TYPES
+
         super(Volume, self).__init__(value)
 
         self.size = self.content.get('size', None)
-        self.check_event_type()
         self.check_content()
-
-    def check_event_type(self):
-        if self.event_type not in VOLUME_EVENT_TYPES:
-            msg = _("Volume event type must be in %s") % str(VOLUME_EVENT_TYPES)
-            raise exception.EventTypeInvalid(msg)
 
     def check_content(self):
 
@@ -54,7 +50,7 @@ class Volume(base.Resource):
         resource = self.get_resource()
         unit_price = self.get_price()
         start_at = self.get_start_at()
-        deta_time = (self.event_time - start_at).seconds / 3600.0
+        deta_time = (self.event_time - start_at).total_seconds() / 3600.0
         record_description = self.resource_type + ' ' + self.event_type
         record = {}
         updated_resource = {}

@@ -137,6 +137,22 @@ class EventTimeInvalid(Invalid):
     message = _("Invalid event time.")
 
 
+class ImageContentInvalid(Invalid):
+    message = _("Image size not specified in the content.")
+
+
+class ImageSizeInvalid(Invalid):
+    message = _("Image size must be positive integer.")
+
+
+class InstanceSnapshotContentInvalid(Invalid):
+    message = _("Instance snapshot size not specified in the content.")
+
+
+class InstanceSnapshotSizeInvalid(Invalid):
+    message = _("Instance snapshot size must be positive integer.")
+
+
 class VolumeContentInvalid(Invalid):
     message = _("Invalid volume content.")
 

@@ -17,21 +17,17 @@ from koala.billing import base
 from koala.common import exception
 from koala.openstack.common.gettextutils import _
 
-ROUTER_EVENT_TYPES = ('create', 'delete', 'exists')
+EVENT_TYPES = ('create', 'delete', 'exists')
 
 
 class Router(base.Resource):
     """Router billing resource."""
 
     def __init__(self, value):
-        super(Router, self).__init__(value)
-        self.check_event_type()
-        self.check_content()
+        self.EVENT_TYPES = EVENT_TYPES
 
-    def check_event_type(self):
-        if self.event_type not in ROUTER_EVENT_TYPES:
-            msg = _("Router event type must be in %s.") % str(ROUTER_EVENT_TYPES)
-            raise exception.EventTypeInvalid(msg)
+        super(Router, self).__init__(value)
+        self.check_content()
 
     def check_content(self):
 
@@ -46,7 +42,7 @@ class Router(base.Resource):
         resource = self.get_resource()
         unit_price = self.get_price()
         start_at = self.get_start_at()
-        deta_time = (self.event_time - start_at).seconds / 3600.0
+        deta_time = (self.event_time - start_at).total_seconds() / 3600.0
         record = {}
         updated_resource = {}
         record_description = self.resource_type + ' ' + self.event_type

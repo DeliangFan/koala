@@ -13,12 +13,26 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from koala.billing import base
+from koala.billing import image
 from koala.openstack.common.gettextutils import _
 
+EVENT_TYPES = ('upload', 'delete', 'exists')
 
-class InstanceSnapshot(base.Resource):
+
+class InstanceSnapshot(image.Image):
+    """Instance snapshot billing resource.
+
+       Instance snapshot is the copy of instance disk and stored as an image
+       in glance.
+    """
     def __init__(self, value):
         super(InstanceSnapshot, self).__init__(value)
-        msg = _("Instance snapshot billing system has not been implemented.")
-        raise NotImplementedError(msg)
+
+    def check_content(self):
+        if self.size is None:
+            msg = _("Instance snapshot size not specified in the content.")
+            raise exception.InstanceSnapshotContentInvalid(msg)
+
+        if self.size < 1:
+            msg = _("Instance snapshot size must be positive integer.")
+            raise exception.InstanceSnapshotSizeInvalid(msg)

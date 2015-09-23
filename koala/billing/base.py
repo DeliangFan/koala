@@ -33,12 +33,7 @@ class Resource(object):
         self.region = value.get('region', None)
 
         self.db_api = dbapi.get_backend()
-
-    def check_event_type(self):
-        """Check the event type."""
-
-        msg = _("Check event type has not been implemented.")
-        raise NotImplementedError(msg)
+        self.check_event_type()
 
     def check_content(self):
         """Check content base on different resource."""
@@ -46,33 +41,13 @@ class Resource(object):
         msg = _("Check content has not been implemented.")
         raise NotImplementedError(msg)
 
-    def billing_resource(self):
-        """Billing the resource and generate billing records.
+    def check_event_type(self):
+        """Check the event type."""
 
-           This is the mainly function for billing a resource. When the new
-           event comes, we check whether the resource is a new or not. If
-           it's a new resource, we need to generate a resource corresponding,
-           otherwise, we just to calculate the consumption and update the
-           billing records.
-        """
-        if self.get_resource():
-            self.calculate_consumption()
-        else:
-            # NOTE(fandeliang) we still need to check the event type. if the
-            # event type is not create, it means that some messages ahead
-            # have lost.
-            if self.event_type == 'create':
-                self.create_resource()
-            elif self.event_type == 'delete':
-                # If we recieve a delete event with not resource records, just
-                # ignore it.
-                # TBD(fandeliang) Log.warning(_("Messaging missing"))
-                pass
-            else:
-                # If we recieve a resize or exists event, create the new
-                # resource and treat it as the create time.
-                # TBD(fandeliang) Log.warning(_("Messaging missing"))
-                self.create_resource()
+        if self.event_type not in self.EVENT_TYPES:
+            msg = _("%s event type must be in %s.") %(self.resource_type,
+                                                      str(self.EVENT_TYPES))
+            raise exception.EventTypeInvalid(msg)
 
     def get_price(self):
         """Get the resource type by resource type and region."""
@@ -172,3 +147,31 @@ class Resource(object):
             raise exception.EventTimeInvalid(msg)
 
         return start_at
+
+    def billing_resource(self):
+        """Billing the resource and generate billing records.
+
+           This is the mainly function for billing a resource. When the new
+           event comes, we check whether the resource is a new or not. If
+           it's a new resource, we need to generate a resource corresponding,
+           otherwise, we just to calculate the consumption and update the
+           billing records.
+        """
+        if self.get_resource():
+            self.calculate_consumption()
+        else:
+            # NOTE(fandeliang) we still need to check the event type. if the
+            # event type is not create, it means that some messages ahead
+            # have lost.
+            if self.event_type == 'create':
+                self.create_resource()
+            elif self.event_type == 'delete':
+                # If we recieve a delete event with not resource records, just
+                # ignore it.
+                # TBD(fandeliang) Log.warning(_("Messaging missing"))
+                pass
+            else:
+                # If we recieve a resize or exists event, create the new
+                # resource and treat it as the create time.
+                # TBD(fandeliang) Log.warning(_("Messaging missing"))
+                self.create_resource()
