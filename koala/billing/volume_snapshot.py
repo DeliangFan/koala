@@ -34,7 +34,7 @@ class VolumeSnapshot(base.Resource):
 
     def check_event_type(self):
         if self.event_type not in VOLUME_SNAPSHOT_EVENT_TYPES:
-            msg = _("Volume snapshot event type must be in %s") % str(
+            msg = _("Volume snapshot event type must be in %s.") % str(
                 VOLUME_SNAPSHOT_EVENT_TYPES)
             raise exception.EventTypeInvalid(msg)
 
@@ -53,17 +53,16 @@ class VolumeSnapshot(base.Resource):
         unit_price = self.get_price()
         start_at = self.get_start_at()
         deta_time = (self.event_time - start_at).seconds / 3600.0
-        record_description = self.resource_type + ' ' + self.event_type
+
         record = {}
         updated_resource = {}
+        record_description = self.resource_type + ' ' + self.event_type
 
         if self.event_type == 'create':
             msg = _("Duplicate event.")
             raise exception.EventDuplicate(msg)
-
         elif self.event_type == 'exists':
             record_description = "Audit billing"
-
         elif self.event_type == 'delete':
             updated_resource['deleted'] = 1
             updated_resource['deleted_at'] = self.event_time

@@ -143,3 +143,15 @@ class VolumeContentInvalid(Invalid):
 
 class VolumeSizeInvalid(Invalid):
     message = _("Volume size must be positive integer.")
+
+
+class VolumeSnapshotContentInvalid(Invalid):
+    message = _("Invalid volume snapshot content.")
+
+
+class VolumeSnapshotSizeInvalid(Invalid):
+    message = _("Volume snapshot size must be positive integer.")
+
+
+class RouterContentInvalid(Invalid):
+    message = _("Router content should be empty.")

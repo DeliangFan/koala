@@ -3,6 +3,8 @@ curl -X POST -H "Content-Type: application/json" 127.0.0.1:9999/v1/prices -d '{"
 
 curl -X POST -H "Content-Type: application/json" 127.0.0.1:9999/v1/prices -d '{"name": "sata_volume", "resource_type": "volume_snapshot", "unit_price": 1.0, "region": "bj"}'
 
+curl -X POST -H "Content-Type: application/json" 127.0.0.1:9999/v1/prices -d '{"name": "router", "resource_type": "router", "unit_price": 0.888, "region": "bj"}'
+
 ----------- Event ---------
 
 curl   -X POST -H "Content-Type: application/json" 127.0.0.1:9999/v1/events -d '{"resource_id": "123jj-daj-444444444", "resource_name": "volume01", "resource_type": "volume","event_type": "create", "tenant_id": "8888", "region": "bj", "event_time": "2015-09-08T21:00:17.523000", "content": {"size": 50}}'
@@ -13,3 +15,10 @@ curl   -X POST -H "Content-Type: application/json" 127.0.0.1:9999/v1/events -d '
 
 ---------- Record -----------
 curl 127.0.0.1:9999/v1/records/123jj-daj-444444444
+
+---------- Router -----------
+curl   -X POST -H "Content-Type: application/json" 127.0.0.1:9999/v1/events -d '{"resource_id": "22222", "resource_name": "rt", "resource_type": "router","event_type": "create", "tenant_id": "8888", "region": "bj", "event_time": "2015-09-08T21:00:17.523000", "content": {}}'
+
+curl   -X POST -H "Content-Type: application/json" 127.0.0.1:9999/v1/events -d '{"resource_id": "22222", "resource_name": "rt", "resource_type": "router","event_type": "exists", "tenant_id": "8888", "region": "bj", "event_time": "2015-09-08T22:20:17.523000", "content": {}}'
+
+curl   -X POST -H "Content-Type: application/json" 127.0.0.1:9999/v1/events -d '{"resource_id": "22222", "resource_name": "rt", "resource_type": "router","event_type": "delete", "tenant_id": "8888", "region": "bj", "event_time": "2015-09-08T23:00:17.523000", "content": {}}'
