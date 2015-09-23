@@ -16,10 +16,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from oslo.config import cfg
-
-from koala.openstack.common import log as logging
 from koala.openstack.common.gettextutils import _
+from koala.openstack.common import log as logging
+
+from oslo.config import cfg
 
 LOG = logging.getLogger(__name__)
 

@@ -24,8 +24,6 @@ Run storage database migration.
 
 from oslo.config import cfg
 
-import sys
-
 from koala.db import migration
 
 CONF = cfg.CONF

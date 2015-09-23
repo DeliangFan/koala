@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-from koala.tests.db import base
-from koala.db import api as dbapi
 from koala.common import exception
+from koala.db import api as dbapi
 from koala.openstack.common import uuidutils
+from koala.tests.db import base
 from koala.tests.db import utils
 
 

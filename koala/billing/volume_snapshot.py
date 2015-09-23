@@ -62,7 +62,8 @@ class VolumeSnapshot(base.Resource):
             updated_resource['deleted'] = 1
             updated_resource['deleted_at'] = self.event_time
             updated_resource['status'] = 'delete'
-            updated_resource['description'] = "Volume snapshot has ben deleted."
+            updated_resource['description'] = "Resource has ben deleted."
+            record_description = "Resource has ben deleted."
 
         consumption = unit_price * deta_time * self.size
 

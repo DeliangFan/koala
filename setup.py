@@ -17,21 +17,6 @@
 import setuptools
 
 
-project = 'koala'
-
 setuptools.setup(
-    name=project,
-    description='App Store API',
-    classifiers=[
-        'Environment :: OpenStack',
-        'Intended Audience :: Information Technology',
-        'Intended Audience :: System Administrators',
-        'License :: OSI Approved :: Apache Software License',
-        'Operating System :: POSIX :: Linux',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        ],
-    include_package_data=True,
-    setup_requires=['d2to1>=0.2.10,<0.3', 'pbr>=0.5,<0.6'],
-    d2to1=True,
-)
+    setup_requires=['pbr'],
+    pbr=True)

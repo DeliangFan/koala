@@ -6,8 +6,8 @@
 
 from oslo.config import cfg
 
-from sqlalchemy import Column, ForeignKey
-from sqlalchemy import DateTime, Float, Integer, String, Text
+from sqlalchemy import Column
+from sqlalchemy import DateTime, Float, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 from koala.openstack.common.db.sqlalchemy import models
@@ -41,6 +41,7 @@ class Price(Base):
     unit_price = Column(Float)
     region = Column(String(length=255))
     description = Column(String(length=255))
+    # NOTE(fandeliang) In fact, timestamp is not needed.
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 
@@ -51,7 +52,6 @@ class Resource(Base):
 
     # TBD(fandeliang) uuid or id
     id = Column(Integer, primary_key=True, nullable=False)
-    # TBD(fandeliang) need to make sure whether all the resource type are uuid. If it is uuid, set the length to 36.
     resource_id = Column(String(length=255))
     resource_name = Column(String(length=255))
     status = Column(String(length=255))
