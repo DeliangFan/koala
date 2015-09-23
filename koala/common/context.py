@@ -194,8 +194,10 @@ def require_admin_context(ctxt):
 
 
 def require_context(ctxt):
-    """Raise exception.NotAuthorized() if context is not a user or an
-    admin context.
+    """Require the user of the resource or an admin user.
+
+    Raise exception.NotAuthorized() if context is not a user or an admin
+    context.
     """
     if not ctxt.is_admin and not is_user_context(ctxt):
         raise exception.NotAuthorized()

@@ -2,18 +2,16 @@
 # -*- coding: utf-8 -*-
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-from oslo.config import cfg
-
-from sqlalchemy.orm.exc import NoResultFound
-
 from koala.common import exception
 from koala.common import utils
 from koala.db import api
 from koala.db.sqlalchemy import models
 from koala.openstack.common.db.sqlalchemy import session as db_session
+from koala.openstack.common.gettextutils import _
 from koala.openstack.common import log
 from koala.openstack.common import uuidutils
-from koala.openstack.common.gettextutils import _
+
+from oslo.config import cfg
 
 CONF = cfg.CONF
 CONF.import_opt('connection',
@@ -74,8 +72,8 @@ class Connection(api.Connection):
     def price_get_by_resource(self, resource_type, region):
         """Get the price by resource type and region."""
         query = model_query(models.Price)
-        query = query.filter(models.Price.resource_type==resource_type)
-        query = query.filter(models.Price.region==region)
+        query = query.filter(models.Price.resource_type == resource_type)
+        query = query.filter(models.Price.region == region)
 
         prices = query.all()
         if prices:
@@ -122,7 +120,8 @@ class Connection(api.Connection):
             query = add_identity_filter(query, id)
             count = query.delete()
             if count != 1:
-                raise exception.PriceNotFound(ex)
+                msg = ("Price %s not found.") % str(id)
+                raise exception.PriceNotFound(msg)
 
     def resources_get_all(self):
         """List all the resources by query."""
@@ -133,7 +132,7 @@ class Connection(api.Connection):
     def resource_get_by_id(self, resource_id):
         """Get the resource by id."""
         query = model_query(models.Resource)
-        query = query.filter(models.Resource.resource_id==resource_id)
+        query = query.filter(models.Resource.resource_id == resource_id)
 
         return query.all()
 
@@ -151,12 +150,12 @@ class Connection(api.Connection):
 
         with session.begin():
             query = model_query(models.Resource, session=session)
-            query = query.filter(models.Resource.resource_id==resource_id)
+            query = query.filter(models.Resource.resource_id == resource_id)
             count = query.update(value, synchronize_session='fetch')
 
-            if count !=1:
+            if count != 1:
                 msg = _("Resource %s not found.") % resource_id
-                raise exception.ResourceNotFound()
+                raise exception.ResourceNotFound(msg)
 
             resource = query.one()
         return resource
@@ -164,14 +163,14 @@ class Connection(api.Connection):
     def records_get_by_resource_id(self, resource_id):
         """List the records by resource id."""
         query = model_query(models.Record)
-        query = query.filter(models.Record.resource_id==resource_id)
+        query = query.filter(models.Record.resource_id == resource_id)
 
         return query.all()
 
     def record_get_by_last(self, resource_id):
         """Get the last record by resource id."""
         query = model_query(models.Record)
-        query = query.filter(models.Record.resource_id==resource_id)
+        query = query.filter(models.Record.resource_id == resource_id)
 
         # Get the lastest record by record end_at timestamp.
         resource = query.order_by(models.Record.end_at.desc(),

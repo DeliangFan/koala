@@ -14,6 +14,7 @@
 #    under the License.
 
 from koala.billing import image
+from koala.common import exception
 from koala.openstack.common.gettextutils import _
 
 EVENT_TYPES = ('upload', 'delete', 'exists')

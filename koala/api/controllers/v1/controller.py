@@ -10,7 +10,6 @@ from pecan import rest
 from koala.api.controllers.v1 import base
 from koala.common import exception
 from koala.common.wsmeext import pecan as wsme_pecan
-from koala.db import api as db_api
 from koala.openstack.common.gettextutils import _
 from koala.openstack.common import importutils
 from wsme import types as wtypes
@@ -160,10 +159,12 @@ class Resource(base.APIBase):
 
 
 class ResourcesController(rest.RestController):
-    """Resource keeps the global information for a billing resource. Only when
-       Koala recieve an event from ceilometer, than it will generate a new
-       resource or update the existed resource. So it is only necessary to
-       expose the query APIs.
+    """Resources controller.
+
+    Resource keeps the global information for a billing resource. Only when
+    koala recieve an event from ceilometer, than it will generate a new
+    resource or update the existed resource. So it is only necessary to expose
+    the query APIs.
     """
 
     @wsme_pecan.wsexpose(Resource, wtypes.text)
@@ -205,15 +206,17 @@ class Record(base.APIBase):
             consumption=0.8,
             unit_price=0.8,
             start_at=start_time,
-            end_at=start_time.replace(hour=start_time.hour+1),
+            end_at=start_time.replace(hour=start_time.hour + 1),
             description='Hourly billing.'
         )
 
 
 class RecordsController(rest.RestController):
-    """Record keeps the hourly billing records for the resource. Only when
-       Koala recieve an event from ceilometer, than it will generate a new
-       records. So it is only necessary to expose the query API.
+    """Records controller.
+
+    Record keeps the hourly billing records for the resource. Only when koala
+    recieve an event from ceilometer, than it will generate a new records. So
+    it is only necessary to expose the query API.
     """
     # TBD(fandeliang) should implement get_all?
 
@@ -298,13 +301,15 @@ class EventsController(rest.RestController):
                 raise exception.Invalid(msg)
 
         if value['resource_type'] not in RESOURCE_AFFINITY_TYPES:
-            msg = _("Resource type must be in %s") % str(REQUIRED_EVENT_PROPERTIES)
+            msg = _("Resource type must be in %s") % str(
+                REQUIRED_EVENT_PROPERTIES)
             raise exception.ResourceTypeInvalid(msg)
 
         return value
 
     def init_resource(self, value):
-        path = 'koala.billing.' + RESOURCE_CLASS_MAP[value.get('resource_type')]
+        path = 'koala.billing.' + RESOURCE_CLASS_MAP[value.get(
+            'resource_type')]
         resource = importutils.import_object(path, value)
 
         return resource

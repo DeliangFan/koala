@@ -1,8 +1,4 @@
-# -*- encoding: utf-8 -*-
-#
 # Copyright © 2012 New Dream Network, LLC (DreamHost)
-#
-# Author: Doug Hellmann <doug.hellmann@dreamhost.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -74,8 +70,8 @@ class FaultWrapperMiddleware(object):
 
 
 class ParsableErrorMiddleware(object):
-    """Replace error body with something the client can parse.
-    """
+    """Replace error body with something the client can parse."""
+
     def __init__(self, app):
         self.app = app
 
@@ -85,8 +81,7 @@ class ParsableErrorMiddleware(object):
         state = {}
 
         def replacement_start_response(status, headers, exc_info=None):
-            """Overrides the default response to make errors parsable.
-            """
+            # Overrides the default response to make errors parsable.
             try:
                 status_code = int(status.split(' ')[0])
                 state['status_code'] = status_code
@@ -97,6 +92,7 @@ class ParsableErrorMiddleware(object):
                 ))
             else:
                 if (state['status_code'] / 100) not in (2, 3):
+
                     # Remove some headers so we can replace them later
                     # when we have the full error message and can
                     # compute the length.

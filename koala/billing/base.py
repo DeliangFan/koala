@@ -45,8 +45,9 @@ class Resource(object):
         """Check the event type."""
 
         if self.event_type not in self.EVENT_TYPES:
-            msg = _("%s event type must be in %s.") %(self.resource_type,
-                                                      str(self.EVENT_TYPES))
+            msg = _("%(res_type)s event type must be in %(format)s.") % {
+                                        'res_type': self.resource_type,
+                                        'format': str(self.EVENT_TYPES)}
             raise exception.EventTypeInvalid(msg)
 
     def get_price(self):
@@ -55,8 +56,9 @@ class Resource(object):
                                                     self.region)
 
         if not price:
-            msg = _("Price of %s in region %s not found.") % (
-                self.resource_type, self.region)
+            msg = _("Price of %(res_type)s in region %(region)s could not "
+                    "be found.") % {'res_type': self.resource_type,
+                                    'region': self.region}
             raise exception.PriceNotFound(msg)
 
         return price.unit_price
@@ -88,7 +90,7 @@ class Resource(object):
 
         # Convert json to string.
         res['content'] = jsonutils.dumps(self.content)
-        
+
         description = "Start billing " + self.resource_type
         res['description'] = description
 
@@ -126,7 +128,7 @@ class Resource(object):
         for key in ('unit_price', 'consumption', 'description', 'start_at'):
             if key not in value:
                 msg = _("Property %s is needed to generate record.")
-                raise RecordValueInvalid(msg)
+                raise exception.RecordValueInvalid(msg)
 
         self.db_api.record_create(value)
 

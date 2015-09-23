@@ -54,29 +54,29 @@ class Volume(base.Resource):
         record_description = self.resource_type + ' ' + self.event_type
         record = {}
         updated_resource = {}
+        consumption = unit_price * deta_time * self.size
 
         if self.event_type == 'create':
             msg = _("Duplicate event.")
             raise exception.EventDuplicate(msg)
-
         elif self.event_type == 'resize':
             # We get the previous size information from the resource content
             # for a resize event.
             pre_content = jsonutils.loads(resource.content)
             pre_size = pre_content.get('size', 0)
+            consumption = unit_price * deta_time * pre_size
             updated_resource['updated_at'] = self.event_time
             updated_resource['content'] = jsonutils.dumps(self.content)
-
+            updated_resource['description'] = "Resource has been deleted"
+            record_description = "Resource has been deleted"
         elif self.event_type == 'exists':
             record_description = "Audit billing"
-
         elif self.event_type == 'delete':
             updated_resource['deleted'] = 1
             updated_resource['deleted_at'] = self.event_time
             updated_resource['status'] = 'delete'
-            updated_resource['description'] = "Volume has been deleted"
-
-        consumption = unit_price * deta_time * self.size
+            updated_resource['description'] = "Resource has been deleted"
+            record_description = "Resource has been deleted"
 
         # Format record information and store it to database.
         record['resource_id'] = self.resource_id

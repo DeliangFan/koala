@@ -27,9 +27,10 @@ from koala.tests import base
 
 
 class FunctionalTest(base.TestCase):
-    """Used for functional tests of Pecan controllers where you need to
-  n  test your literal application and its integration with the
-    framework.
+    """Class Functional Test.
+
+    Used for functional tests of Pecan controllers where you need to test your
+    literal application and its integration with the framework.
     """
 
     PATH_PREFIX = '/v1'

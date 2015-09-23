@@ -75,7 +75,7 @@ def wsexpose(*args, **kwargs):
                     pecan.response.status = result.status_code
                     result = result.obj
 
-            except:
+            except Exception:
                 raise
                 data = wsme.api.format_exception(
                     sys.exc_info(),
