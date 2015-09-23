@@ -47,10 +47,32 @@ class Resource(object):
         raise NotImplementedError(msg)
 
     def billing_resource(self):
-        """Billing the resource and generate billing records."""
+        """Billing the resource and generate billing records.
 
-        msg = _("Billing resource has not been implemented.")
-        raise NotImplementedError(msg)
+           This is the mainly function for billing a resource. When the new
+           event comes, we check whether the resource is a new or not. If
+           it's a new resource, we need to generate a resource corresponding,
+           otherwise, we just to calculate the consumption and update the
+           billing records.
+        """
+        if self.get_resource():
+            self.calculate_consumption()
+        else:
+            # NOTE(fandeliang) we still need to check the event type. if the
+            # event type is not create, it means that some messages ahead
+            # have lost.
+            if self.event_type == 'create':
+                self.create_resource()
+            elif self.event_type == 'delete':
+                # If we recieve a delete event with not resource records, just
+                # ignore it.
+                # TBD(fandeliang) Log.warning(_("Messaging missing"))
+                pass
+            else:
+                # If we recieve a resize or exists event, create the new
+                # resource and treat it as the create time.
+                # TBD(fandeliang) Log.warning(_("Messaging missing"))
+                self.create_resource()
 
     def get_price(self):
         """Get the resource type by resource type and region."""
