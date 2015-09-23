@@ -50,7 +50,7 @@ class Volume(base.Resource):
         resource = self.get_resource()
         unit_price = self.get_price()
         start_at = self.get_start_at()
-        deta_time = (self.event_time - start_at).total_seconds() / 3600.0
+        deta_time = self.get_total_seconds(start_at, self.event_time) / 3600.0
         record_description = self.resource_type + ' ' + self.event_type
         record = {}
         updated_resource = {}
