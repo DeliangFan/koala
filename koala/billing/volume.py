@@ -47,46 +47,18 @@ class Volume(base.Resource):
 
     def calculate_consumption(self):
         """Calculate the consumption by deta time and price."""
-        resource = self.get_resource()
-        unit_price = self.get_price()
-        start_at = self.get_start_at()
-        deta_time = self.get_total_seconds(start_at, self.event_time) / 3600.0
-        record_description = self.resource_type + ' ' + self.event_type
-        record = {}
-        updated_resource = {}
-        consumption = unit_price * deta_time * self.size
 
-        if self.event_type == 'create':
-            msg = _("Duplicate event.")
-            raise exception.EventDuplicate(msg)
-        elif self.event_type == 'resize':
-            # We get the previous size information from the resource content
-            # for a resize event.
-            pre_content = jsonutils.loads(resource.content)
-            pre_size = pre_content.get('size', 0)
-            consumption = unit_price * deta_time * pre_size
-            updated_resource['updated_at'] = self.event_time
-            updated_resource['content'] = jsonutils.dumps(self.content)
-            updated_resource['description'] = "Resource has been deleted"
-            record_description = "Resource has been deleted"
-        elif self.event_type == 'exists':
-            record_description = "Audit billing"
-        elif self.event_type == 'delete':
-            updated_resource['deleted'] = 1
-            updated_resource['deleted_at'] = self.event_time
-            updated_resource['status'] = 'delete'
-            updated_resource['description'] = "Resource has been deleted"
-            record_description = "Resource has been deleted"
+        self.unit_price = self.get_price()
+        self.start_at = self.get_start_at()
+        total_seconds = self.get_total_seconds(self.start_at, self.event_time)
+        delta_time = total_seconds / 3600.0
 
-        # Format record information and store it to database.
-        record['resource_id'] = self.resource_id
-        record['start_at'] = start_at
-        record['end_at'] = self.event_time
-        record['unit_price'] = unit_price
-        record['consumption'] = consumption
-        record['description'] = record_description
-        self.create_record(record)
+        if self.event_type == 'resize':
+            pre_content = jsonutils.loads(self.exist_resource.content)
+            size = pre_content.get('size', 0)
+        else:
+            size = self.size
 
-        # Format resource information and update it to database.
-        updated_resource['consumption'] = resource.consumption + consumption
-        self.update_resource(updated_resource)
+        consumption = self.unit_price * delta_time * size
+
+        return consumption
