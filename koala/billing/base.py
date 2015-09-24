@@ -208,101 +208,78 @@ class Resource(object):
                 # TBD(fandeliang) Log.warning(_("Messaging missing"))
                 self.create_resource()
 
+    def audit_base(self):
+        """Base audit method."""
+
+        consumption = self.calculate_consumption()
+        description = "Resource has been " + self.event_type + 'd'
+
+        record = {}
+        record['start_at'] = self.start_at
+        record['unit_price'] = self.unit_price
+        record['consumption'] = consumption
+        record['description'] = description
+
+        updated_resource = {}
+        total_consumption = self.exist_resource.consumption + consumption
+        updated_resource['consumption'] = total_consumption
+        updated_resource['description'] = description
+
+        return record, updated_resource
+
     def audit_exists(self):
         # NOTE(fandeliang) take care the status in event!!!!!!!!!!!
         # We still need to check the status and synchronize to resource status.
-        consumption = self.calculate_consumption()
+        record, updated_resource = self.audit_base()
 
-        record = {}
-        record['start_at'] = self.start_at
-        record['unit_price'] = self.unit_price
-        record['consumption'] = consumption
         record['description'] = "Audit billing."
-        # Create the new record in database.
-        self.create_record(record)
 
-        updated_resource = {}
-        total_consumption = self.exist_resource.consumption + consumption
-        updated_resource['consumption'] = total_consumption
-        # Update the resource consumption to database.
+        # Update the billing result to database.
+        self.create_record(record)
         self.update_resource(updated_resource)
 
     def audit_resize(self):
-        consumption = self.calculate_consumption()
+        record, updated_resource = self.audit_base()
 
-        record = {}
-        record['start_at'] = self.start_at
-        record['unit_price'] = self.unit_price
-        record['consumption'] = consumption
-        record['description'] = "Resource has been resized."
-        # Create the new record in database.
-        self.create_record(record)
-
-        updated_resource = {}
-        total_consumption = self.exist_resource.consumption + consumption
-        updated_resource['consumption'] = total_consumption
         updated_resource['updated_at'] = self.event_time
-        updated_resource['description'] = "Resource has been resized."
-        # Update the resource consumption to database.
+
+        # Update the billing result to database.
+        self.create_record(record)
         self.update_resource(updated_resource)
 
     def audit_delete(self):
-        consumption = self.calculate_consumption()
+        record, updated_resource = self.audit_base()
 
-        record = {}
-        record['start_at'] = self.start_at
-        record['unit_price'] = self.unit_price
-        record['consumption'] = consumption
-        record['description'] = "Resource has been deleted."
-        # Create the new record in database.
-        self.create_record(record)
-
-        updated_resource = {}
-        total_consumption = self.exist_resource.consumption + consumption
-        updated_resource['consumption'] = total_consumption
         updated_resource['deleted'] = 1
         updated_resource['deleted_at'] = self.event_time
         updated_resource['status'] = 'delete'
-        updated_resource['description'] = "Resource has been deleted."
-        # Update the resource consumption to database.
+
+        # Update the billing result to database.
+        self.create_record(record)
         self.update_resource(updated_resource)
 
     def audit_power_off(self):
-        consumption = self.calculate_consumption()
+        record, updated_resource = self.audit_base()
 
-        record = {}
-        record['start_at'] = self.start_at
-        record['unit_price'] = self.unit_price
-        record['consumption'] = consumption
         record['description'] = "Resource has been power off."
-        # Create the new record in database.
-        self.create_record(record)
 
-        updated_resource = {}
-        total_consumption = self.exist_resource.consumption + consumption
-        updated_resource['consumption'] = total_consumption
         updated_resource['updated_at'] = self.event_time
         updated_resource['description'] = "Resource has been power off."
         updated_resource['status'] = 'shutoff'
-        # Update the resource consumption to database.
+
+        # Update the billing result to database.
+        self.create_record(record)
         self.update_resource(updated_resource)
 
     def audit_power_on(self):
-        consumption = self.calculate_consumption()
+        record, updated_resource = self.audit_base()
 
-        record = {}
-        record['start_at'] = self.start_at
-        record['unit_price'] = self.unit_price
-        record['consumption'] = consumption
         record['description'] = "Resource has been power on."
-        # Create the new record in database.
-        self.create_record(record)
 
-        updated_resource = {}
-        total_consumption = self.exist_resource.consumption + consumption
-        updated_resource['consumption'] = total_consumption
         updated_resource['updated_at'] = self.event_time
         updated_resource['description'] = "Resource has been power on."
         updated_resource['status'] = 'active'
-        # Update the resource consumption to database.
+
+        # Update the billing result to database.
+        self.create_record(record)
         self.update_resource(updated_resource)
