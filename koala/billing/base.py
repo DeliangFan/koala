@@ -194,7 +194,7 @@ class Resource(object):
             # If we recieve a delete event with not resource records, just
             # ignore it.
             # TBD(fandeliang) Log.warning(_("Messaging missing."))
-            if self.event_type == 'delete':
+            elif self.event_type == 'delete':
                 pass
             else:
                 # If we recieve the other events, create the new resource and
@@ -210,11 +210,13 @@ class Resource(object):
         record['unit_price'] = self.unit_price
         record['consumption'] = consumption
         record['description'] = "Audit billing."
+        # Create the new record in database.
         self.create_record(record)
 
         updated_resource = {}
         total_consumption = self.exist_resource.consumption + consumption
         updated_resource['consumption'] = total_consumption
+        # Update the resource consumption to database.
         self.update_resource(updated_resource)
 
     def audit_resize(self):
@@ -225,6 +227,7 @@ class Resource(object):
         record['unit_price'] = self.unit_price
         record['consumption'] = consumption
         record['description'] = "Resource has been resized."
+        # Create the new record in database.
         self.create_record(record)
 
         updated_resource = {}
@@ -232,6 +235,8 @@ class Resource(object):
         updated_resource['consumption'] = total_consumption
         updated_resource['updated_at'] = self.event_time
         updated_resource['description'] = "Resource has been resized."
+        # Update the resource consumption to database.
+        self.update_resource(updated_resource)
 
     def audit_delete(self):
         consumption = self.calculate_consumption()
@@ -241,6 +246,7 @@ class Resource(object):
         record['unit_price'] = self.unit_price
         record['consumption'] = consumption
         record['description'] = "Resource has been deleted."
+        # Create the new record in database.
         self.create_record(record)
 
         updated_resource = {}
@@ -250,4 +256,5 @@ class Resource(object):
         updated_resource['deleted_at'] = self.event_time
         updated_resource['status'] = 'delete'
         updated_resource['description'] = "Resource has been deleted."
+        # Update the resource consumption to database.
         self.update_resource(updated_resource)
