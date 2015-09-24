@@ -41,6 +41,12 @@ class Resource(object):
         msg = _("Check content has not been implemented.")
         raise NotImplementedError(msg)
 
+    def calculate_consumption(self):
+        """Calculate the consumption by deta time and price."""
+
+        msg = _("Calculate cunsumption has not been implemented.")
+        raise NotImplementedError(msg)
+
     def check_event_type(self):
         """Check the event type."""
 
@@ -150,16 +156,16 @@ class Resource(object):
 
         return start_at
 
-    def get_total_seconds(start_at, end_at):
+    def get_total_seconds(self, start_at, end_at):
         """What the fuck.
 
         datetime.deltatime does not have attribute total_seconds in python 2.6.
         """
-        time_delta = end_at - start_at
-        if hasattr(time_delta, 'total_seconds'):
-            return time_delta.total_seconds()
+        delta_time = end_at - start_at
+        if hasattr(delta_time, 'total_seconds'):
+            return delta_time.total_seconds()
         else:
-            return time_delta.seconds + time_delta.days * 3600 * 24
+            return delta_time.seconds + delta_time.days * 3600 * 24
 
     def billing_resource(self):
         """Billing the resource and generate billing records.
@@ -170,21 +176,78 @@ class Resource(object):
            otherwise, we just to calculate the consumption and update the
            billing records.
         """
-        if self.get_resource():
-            self.calculate_consumption()
-        else:
-            # NOTE(fandeliang) we still need to check the event type. if the
-            # event type is not create, it means that some messages ahead
-            # have lost.
-            if self.event_type == 'create':
-                self.create_resource()
+        self.exist_resource = self.get_resource()
+        if self.exist_resource:
+            if self.event_type in ('create', 'upload'):
+                msg = _("Duplicate event.")
+                raise exception.EventDuplicate(msg)
+            elif self.event_type == 'exists':
+                self.audit_exists()
+            elif self.event_type == 'resize':
+                self.audit_resize()
             elif self.event_type == 'delete':
-                # If we recieve a delete event with not resource records, just
-                # ignore it.
-                # TBD(fandeliang) Log.warning(_("Messaging missing"))
+                self.audit_delete()
+            # NOTE(fandeliang) instance stop state.
+        else:
+            if self.event_type in ('create', 'upload'):
+                self.create_resource()
+            # If we recieve a delete event with not resource records, just
+            # ignore it.
+            # TBD(fandeliang) Log.warning(_("Messaging missing."))
+            if self.event_type == 'delete':
                 pass
             else:
-                # If we recieve a resize or exists event, create the new
-                # resource and treat it as the create time.
+                # If we recieve the other events, create the new resource and
+                # treat it as the create time.
                 # TBD(fandeliang) Log.warning(_("Messaging missing"))
                 self.create_resource()
+
+    def audit_exists(self):
+        consumption = self.calculate_consumption()
+
+        record = {}
+        record['start_at'] = self.start_at
+        record['unit_price'] = self.unit_price
+        record['consumption'] = consumption
+        record['description'] = "Audit billing."
+        self.create_record(record)
+
+        updated_resource = {}
+        total_consumption = self.exist_resource.consumption + consumption
+        updated_resource['consumption'] = total_consumption
+        self.update_resource(updated_resource)
+
+    def audit_resize(self):
+        consumption = self.calculate_consumption()
+
+        record = {}
+        record['start_at'] = self.start_at
+        record['unit_price'] = self.unit_price
+        record['consumption'] = consumption
+        record['description'] = "Resource has been resized."
+        self.create_record(record)
+
+        updated_resource = {}
+        total_consumption = self.exist_resource.consumption + consumption
+        updated_resource['consumption'] = total_consumption
+        updated_resource['updated_at'] = self.event_time
+        updated_resource['description'] = "Resource has been resized."
+
+    def audit_delete(self):
+        consumption = self.calculate_consumption()
+
+        record = {}
+        record['start_at'] = self.start_at
+        record['unit_price'] = self.unit_price
+        record['consumption'] = consumption
+        record['description'] = "Resource has been deleted."
+        self.create_record(record)
+
+        updated_resource = {}
+        total_consumption = self.exist_resource.consumption + consumption
+        updated_resource['consumption'] = total_consumption
+        updated_resource['deleted'] = 1
+        updated_resource['deleted_at'] = self.event_time
+        updated_resource['status'] = 'delete'
+        updated_resource['description'] = "Resource has been deleted."
+        self.update_resource(updated_resource)

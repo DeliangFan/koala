@@ -105,7 +105,7 @@ class Connection(api.Connection):
             query = model_query(models.Price, session=session)
             query = add_identity_filter(query, id)
             count = query.update(value, synchronize_session='fetch')
-            if count != 1:
+            if count < 1:
                 msg = _("Price %s not found.") % str(id)
                 raise exception.PriceNotFound(msg)
             price = query.one()
@@ -119,7 +119,7 @@ class Connection(api.Connection):
             query = model_query(models.Price, session=session)
             query = add_identity_filter(query, id)
             count = query.delete()
-            if count != 1:
+            if count < 1:
                 msg = ("Price %s not found.") % str(id)
                 raise exception.PriceNotFound(msg)
 
@@ -153,11 +153,14 @@ class Connection(api.Connection):
             query = query.filter(models.Resource.resource_id == resource_id)
             count = query.update(value, synchronize_session='fetch')
 
-            if count != 1:
+            if count < 1:
                 msg = _("Resource %s not found.") % resource_id
                 raise exception.ResourceNotFound(msg)
+            elif count > 1:
+                # NOTE(fandeliang) Log.warning(resource id duplicate.)
+                pass
+            resource = query.first()
 
-            resource = query.one()
         return resource
 
     def records_get_by_resource_id(self, resource_id):
