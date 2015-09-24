@@ -1,13 +1,12 @@
 bp
-1. Implement resource
-2. Implement record
+1. Implement resource   Done!
+2. Implement record     Done!
 3. Implement charge
 4. Implement test
 5. Test for mysql
 6. Implement rpm
 7. Implement for keystone
 8. Implement https
-
 
 
 1. Exception
@@ -17,6 +16,7 @@ bp
 5. Why close to listen takes lots of time
 6. logging
 7. multiprocessing for koala-api
+8. error state
 
 Important
 How to lock the charge during update database!
