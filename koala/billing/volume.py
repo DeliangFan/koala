@@ -46,7 +46,7 @@ class Volume(base.Resource):
             raise exception.VolumeSizeInvalid(msg)
 
     def calculate_consumption(self):
-        """Calculate the consumption by deta time and price."""
+        """Calculate the consumption by delta time and price."""
 
         self.unit_price = self.get_price()
         self.start_at = self.get_start_at()

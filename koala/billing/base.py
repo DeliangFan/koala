@@ -56,14 +56,16 @@ class Resource(object):
                                         'format': str(self.EVENT_TYPES)}
             raise exception.EventTypeInvalid(msg)
 
-    def get_price(self):
+    def get_price(self, resource_type=None):
         """Get the resource type by resource type and region."""
-        price = self.db_api.price_get_by_resource(self.resource_type,
-                                                    self.region)
+        if not resource_type:
+            resource_type = self.resource_type
+        price = self.db_api.price_get_by_resource(resource_type,
+                                                  self.region)
 
         if not price:
             msg = _("Price of %(res_type)s in region %(region)s could not "
-                    "be found.") % {'res_type': self.resource_type,
+                    "be found.") % {'res_type': resource_type,
                                     'region': self.region}
             raise exception.PriceNotFound(msg)
 
@@ -90,6 +92,7 @@ class Resource(object):
         res['region'] = self.region
         res['consumption'] = 0
         res['deleted'] = 0
+        res['status'] = 'active'
         res['tenant_id'] = self.tenant_id
         res['resource_type'] = self.resource_type
         res['created_at'] = self.event_time
@@ -187,7 +190,10 @@ class Resource(object):
                 self.audit_resize()
             elif self.event_type == 'delete':
                 self.audit_delete()
-            # NOTE(fandeliang) instance stop state.
+            elif self.event_type == 'power_off':
+                self.audit_power_off()
+            elif self.event_type == 'power_on':
+                self.audit_power_on()
         else:
             if self.event_type in ('create', 'upload'):
                 self.create_resource()
@@ -203,6 +209,8 @@ class Resource(object):
                 self.create_resource()
 
     def audit_exists(self):
+        # NOTE(fandeliang) take care the status in event!!!!!!!!!!!
+        # We still need to check the status and synchronize to resource status.
         consumption = self.calculate_consumption()
 
         record = {}
@@ -256,5 +264,45 @@ class Resource(object):
         updated_resource['deleted_at'] = self.event_time
         updated_resource['status'] = 'delete'
         updated_resource['description'] = "Resource has been deleted."
+        # Update the resource consumption to database.
+        self.update_resource(updated_resource)
+
+    def audit_power_off(self):
+        consumption = self.calculate_consumption()
+
+        record = {}
+        record['start_at'] = self.start_at
+        record['unit_price'] = self.unit_price
+        record['consumption'] = consumption
+        record['description'] = "Resource has been power off."
+        # Create the new record in database.
+        self.create_record(record)
+
+        updated_resource = {}
+        total_consumption = self.exist_resource.consumption + consumption
+        updated_resource['consumption'] = total_consumption
+        updated_resource['updated_at'] = self.event_time
+        updated_resource['description'] = "Resource has been power off."
+        updated_resource['status'] = 'shutoff'
+        # Update the resource consumption to database.
+        self.update_resource(updated_resource)
+
+    def audit_power_on(self):
+        consumption = self.calculate_consumption()
+
+        record = {}
+        record['start_at'] = self.start_at
+        record['unit_price'] = self.unit_price
+        record['consumption'] = consumption
+        record['description'] = "Resource has been power on."
+        # Create the new record in database.
+        self.create_record(record)
+
+        updated_resource = {}
+        total_consumption = self.exist_resource.consumption + consumption
+        updated_resource['consumption'] = total_consumption
+        updated_resource['updated_at'] = self.event_time
+        updated_resource['description'] = "Resource has been power on."
+        updated_resource['status'] = 'active'
         # Update the resource consumption to database.
         self.update_resource(updated_resource)

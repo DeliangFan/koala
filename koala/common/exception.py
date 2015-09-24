@@ -153,6 +153,10 @@ class InstanceSnapshotSizeInvalid(Invalid):
     message = _("Instance snapshot size must be positive integer.")
 
 
+class InstanceContentInvalid(Invalid):
+    message = _("Instance content is invalid.")
+
+
 class VolumeContentInvalid(Invalid):
     message = _("Invalid volume content.")
 

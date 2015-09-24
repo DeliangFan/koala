@@ -36,6 +36,7 @@ class Price(Base):
     __tablename__ = 'prices'
 
     id = Column(Integer, primary_key=True, nullable=False)
+    # NOTE(fandeliang) name is not needed.
     name = Column(String(length=255))
     resource_type = Column(String(length=255))
     unit_price = Column(Float)
