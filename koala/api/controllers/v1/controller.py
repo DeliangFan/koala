@@ -138,7 +138,8 @@ class Resource(base.APIBase):
     created_at = datetime.datetime
     updated_at = datetime.datetime
     deleted_at = datetime.datetime
-    description = wtypes.text
+    # NOTE(fandeliang) description is not needed
+    # description = wtypes.text
 
     @classmethod
     def sample(cls):
@@ -153,8 +154,7 @@ class Resource(base.APIBase):
             resource_type='volume',
             created_at=datetime.datetime.utcnow(),
             updated_at=datetime.datetime.utcnow(),
-            deleted_at=None,
-            description='The resource consumption.'
+            deleted_at=None
         )
 
 
