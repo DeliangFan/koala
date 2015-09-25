@@ -6,7 +6,6 @@ meta = MetaData()
 
 prices = Table('prices', meta,
         Column('id', Integer, primary_key=True, nullable=False),
-        Column('name', String(length=255)),
         Column('resource_type', String(length=255)),
         Column('unit_price', Float),
         Column('region', String(length=255)),
