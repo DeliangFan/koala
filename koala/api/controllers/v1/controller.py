@@ -14,7 +14,7 @@ from koala.openstack.common.gettextutils import _
 from koala.openstack.common import importutils
 from wsme import types as wtypes
 
-REQUIRED_PRICE_PROPERTIES = ('name', 'region', 'resource_type', 'unit_price')
+REQUIRED_PRICE_PROPERTIES = ('region', 'resource_type', 'unit_price')
 REQUIRED_EVENT_PROPERTIES = ('resource_id', 'resource_type', 'event_type',
                               'event_time', 'region', 'tenant_id', 'content')
 RESOURCE_AFFINITY_TYPES = ('instance', 'volume', 'router', 'floating_ip',
@@ -36,7 +36,6 @@ class Price(base.APIBase):
     """The id of the resource price."""
     id = int
     unit_price = float
-    name = wtypes.text
     region = wtypes.text
     description = wtypes.text
     # NOTE(fandeliang) we should take care of the volume, ssd or sata
@@ -46,7 +45,6 @@ class Price(base.APIBase):
     def sample(cls):
         return cls(
             id=1,
-            name='disk',
             region='bj',
             unit_price=0.8,
             resource_type='volume',
