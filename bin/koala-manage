@@ -12,4 +12,4 @@ if os.path.exists(os.path.join(possible_topdir, 'koala', '__init__.py')):
 from koala.cmd.manage import main
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(main())

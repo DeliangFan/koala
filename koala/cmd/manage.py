@@ -21,12 +21,13 @@
 """
 Run storage database migration.
 """
+import sys
 
 from oslo.config import cfg
-
 from koala.db import migration
 
 CONF = cfg.CONF
+
 CONF.import_opt('connection',
                 'koala.openstack.common.db.sqlalchemy.session',
                 group='database')
@@ -35,9 +36,8 @@ CONF.import_opt('sqlite_db',
                 'koala.openstack.common.db.sqlalchemy.session')
 
 
-def main(*args):
-    cfg.CONF(args[1:], project='koala')
+def main():
     version = None
-    if 'db_sync' in args[0] and len(args[0]) > 2:
-        version = args[0][2]
+    if 'db_sync' in sys.argv and len(sys.argv) > 2:
+        version = sys.argv[2]
     migration.db_sync(version=version)
