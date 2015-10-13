@@ -15,11 +15,6 @@
 from koala.tests.api import base
 from koala.tests.db import utils
 
-PRICE_DATA = {
-    "resource_type": "volume",
-    "region": "regionOne",
-    "unit_price": 1}
-
 
 class TestPrice(base.FunctionalTest):
 
@@ -30,7 +25,7 @@ class TestPrice(base.FunctionalTest):
         super(TestPrice, self).tearDown()
 
     def test_price_create(self):
-        json = self.post_json('/prices', PRICE_DATA).json
+        json = self.post_json('/prices', utils.get_test_price()).json
         expect = {
             "resource_type": "volume",
             "region": "regionOne",
@@ -47,14 +42,14 @@ class TestPrice(base.FunctionalTest):
             self.assertEqual(json[key], value)
 
     def test_price_update(self):
-        json = self.post_json('/prices', PRICE_DATA).json
+        json = self.post_json('/prices', utils.get_test_price()).json
         uri = '/prices/%s' % (json['id'])
         self.put_json('/prices', {'id': json['id'], 'unit_price': 2})
         json = self.get_json(uri)
         self.assertEqual(json['unit_price'], 2)
 
     def test_simple_delete(self):
-        json = self.post_json('/prices', PRICE_DATA).json
+        json = self.post_json('/prices', utils.get_test_price()).json
         uri = '/prices/%s' % (json['id'])
         self.delete(uri)
         response = self.get_json(uri, expect_errors=True)

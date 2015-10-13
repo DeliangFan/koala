@@ -67,7 +67,13 @@ class Connection(api.Connection):
         query = model_query(models.Price)
         query = add_identity_filter(query, id)
 
-        return query.all()
+        prices = query.all()
+        if prices:
+            price = prices[0]
+        else:
+            price = None
+
+        return price
 
     def price_get_by_resource(self, resource_type, region):
         """Get the price by resource type and region."""
