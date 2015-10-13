@@ -25,6 +25,6 @@ develop-eggs
 .*.sw[po]
 .coverage
 cover
-AUTORS
+AUTHORS
 ChangeLog
 koala/openstack/common/db/koala.sqlite
