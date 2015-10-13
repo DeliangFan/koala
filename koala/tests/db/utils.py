@@ -16,13 +16,10 @@
 #    under the License.
 
 
-def get_test_ex(**kw):
-    ex = {
-        'id': kw.get('id', 3),
-        'uuid': kw.get('uuid', '1be26c0b-03f2-4d2e-ae87-c02d7f33c123'),
-        'title': kw.get('title', 'new ex'),
-        'content': kw.get('content', 'new content'),
-        'created_at': None,
-        'updated_at': None,
+def get_test_price(**kw):
+    price = {
+        'resource_type': kw.get('resource_type', 'volume'),
+        'unit_price': kw.get('unit_price', 1),
+        'region': kw.get('region', 'regionOne')
     }
-    return ex
+    return price

@@ -57,12 +57,12 @@ class PricesController(rest.RestController):
     @wsme_pecan.wsexpose(Price, int)
     def get_one(self, id):
         """Get the price by id."""
-        prices = pecan.request.dbapi.price_get_by_id(id)
-        if not prices:
+        price = pecan.request.dbapi.price_get_by_id(id)
+        if not price:
             msg = _("Price %s not found.") % str(id)
             raise exception.PriceNotFound(msg)
 
-        return prices[0]
+        return price
 
     @wsme_pecan.wsexpose([Price])
     def get_all(self):
@@ -115,8 +115,8 @@ class PricesController(rest.RestController):
     @wsme_pecan.wsexpose(None, int, status_code=204)
     def delete(self, id):
         """Delete the price by id."""
-        prices = pecan.request.dbapi.price_get_by_id(id)
-        if not prices:
+        price = pecan.request.dbapi.price_get_by_id(id)
+        if not price:
             msg = _("Price %s not found.") % str(id)
             raise exception.PriceNotFound(msg)
 
