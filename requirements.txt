@@ -7,6 +7,6 @@ netaddr>=0.7.6
 oslo.config==1.4.0
 pbr>=0.5.21,<1.0
 pecan>=0.2.0
-SQLAlchemy>=0.7.8,<0.7.99
+SQLAlchemy>=0.7.10,<0.7.99
 sqlalchemy-migrate==0.7.2
 WSME>=0.6
