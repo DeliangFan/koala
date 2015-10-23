@@ -75,7 +75,6 @@ This package contains the koala API service.
 rm -rf {test-,}requirements.txt tools/{pip,test}-requires
 find . \( -name .gitignore -o -name .placeholder \) -delete
 find koala -name \*.py -exec sed -i '/\/usr\/bin\/env python/{d;q}' {} +
-find contrib -name tests -type d | xargs rm -r
 
 %build
 %{__python} setup.py build
@@ -94,6 +93,9 @@ mkdir -p %{buildroot}/var/run/koala/
 mkdir -p %{buildroot}/var/lib/koala/
 mkdir -p %{buildroot}/etc/koala/
 
+# Setup log file
+touch %{buildroot}/var/log/koala/koala.log
+
 # Install config files
 install -p -D -m 640 etc/koala/koala.conf.sample %{buildroot}%{_sysconfdir}/koala/koala.conf
 
@@ -108,26 +110,12 @@ rm -fr %{buildroot}%{python_sitelib}/tests/
 rm -fr %{buildroot}%{python_sitelib}/run_tests.*
 
 %post api
-%if 0%{?rhel} && 0%{?rhel} <= 6
-if [ $1 -eq 1 ] ; then
-    # Initial installation
-    /sbin/chkconfig --add %{name}-api
-fi
-%else
-%systemd_post
-%endif
+# Initial installation
+/sbin/chkconfig --add koala-api > /dev/null 2>&1
 
 %preun api
-%if 0%{?rhel} && 0%{?rhel} <= 6
-if [ $1 -eq 0 ] ; then
-    for svc in api; do
-        /sbin/service %{name}-${svc} stop > /dev/null 2>&1
-        /sbin/chkconfig --del %{name}-${svc}
-    done
-fi
-%else
-%systemd_preun %{name}-api.service
-%endif
+/sbin/service koala-api stop > /dev/null 2>&1
+/sbin/chkconfig --del koala-api > /dev/null 2>&1
 
 %files -n python-koala
 %dir %{_sysconfdir}/koala
@@ -138,14 +126,11 @@ fi
 %dir %attr(0755,koala,root) %{_sharedstatedir}/koala
 %dir %attr(0755,koala,root) %{_sysconfdir}/koala
 %config(noreplace) %attr(-, root, koala) %{_sysconfdir}/koala/koala.conf
+%config(noreplace) %attr(0664, koala, koala) %{_localstatedir}/log/koala/koala.log 
 
 %files api
 %{_bindir}/koala-api
-%if 0%{?rhel} && 0%{?rhel} <= 6
 %{_initrddir}/%{name}-api
-%else
-%{_unitdir}/%{name}-api.service
-%endif
 
 %changelog
 * Thu Oct 22 2015 Deliang Fan <vanderliang@gmail.com> 2015.1.1-1
