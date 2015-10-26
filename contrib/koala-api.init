@@ -1,0 +1,97 @@
+#!/bin/sh
+#
+# openstack-koala-api  OpenStack Koala API Server
+#
+# chkconfig:   - 98 02
+# description: OpenStack billing and rating service API server. 
+
+### BEGIN INIT INFO
+# Provides:
+# Required-Start: $remote_fs $network $syslog
+# Required-Stop: $remote_fs $syslog
+# Default-Stop: 0 1 6
+# Short-Description: OpenStack Koala API Server
+# description: OpenStack billing and rating service API server. 
+### END INIT INFO
+
+. /etc/rc.d/init.d/functions
+
+prog="koala-api"
+exec="/usr/bin/koala-api"
+config="/etc/koala/koala.conf"
+pidfile="/var/run/koala/koala-api.pid"
+logfile="/var/log/koala/koala.log"
+lockfile="/var/lock/subsys/koala-api"
+
+start() {
+    [ -x $exec ] || exit 5
+    [ -f $config ] || exit 6
+    echo -n "Starting koala-api: "
+    daemon --user koala --pidfile $pidfile "$exec --logfile $logfile &>/dev/null & echo \$! > $pidfile"
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping Koala-api: "
+    killproc -p $pidfile $prog
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    restart
+}
+
+force_reload() {
+    restart
+}
+
+rh_status() {
+    status -p $pidfile $prog
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart)
+        $1
+        ;;
+    reload)
+        rh_status_q || exit 7
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+        restart
+        ;;
+    *)
+    echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+    exit 2
+esac
+exit $?
