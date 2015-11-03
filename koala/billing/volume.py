@@ -53,11 +53,16 @@ class Volume(base.Resource):
         total_seconds = self.get_total_seconds(self.start_at, self.event_time)
         delta_time = total_seconds / 3600.0
 
+        pre_content = jsonutils.loads(self.exist_resource.content)
         if self.event_type == 'resize':
-            pre_content = jsonutils.loads(self.exist_resource.content)
             size = pre_content.get('size', 0)
         else:
-            size = self.size
+            pre_size = pre_content.get('size', 0)
+            if pre_size != self.size:
+                # TBD(fandeliang)
+                # Log.warning("Miss resize event.")
+                pass
+            size = min(self.size, pre_size)
 
         consumption = self.unit_price * delta_time * size
 

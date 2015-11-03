@@ -223,6 +223,7 @@ class Resource(object):
         updated_resource = {}
         total_consumption = self.exist_resource.consumption + consumption
         updated_resource['consumption'] = total_consumption
+        updated_resource['content'] = jsonutils.dumps(self.content)
 
         if self.event_type != 'exists':
             updated_resource['description'] = description
