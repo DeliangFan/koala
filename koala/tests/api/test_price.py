@@ -35,24 +35,24 @@ class TestPrice(base.FunctionalTest):
         for key, value in expect.items():
             self.assertEqual(json[key], value)
 
-        uri = '/prices/' + str(json['id'])
-        json = self.get_json(uri)
+        url = '/prices/' + str(json['id'])
+        json = self.get_json(url)
 
         for key, value in expect.items():
             self.assertEqual(json[key], value)
 
     def test_price_update(self):
         json = self.post_json('/prices', utils.get_test_price()).json
-        uri = '/prices/%s' % (json['id'])
+        url = '/prices/%s' % (json['id'])
         self.put_json('/prices', {'id': json['id'], 'unit_price': 2})
-        json = self.get_json(uri)
+        json = self.get_json(url)
         self.assertEqual(json['unit_price'], 2)
 
-    def test_simple_delete(self):
+    def test_price_delete(self):
         json = self.post_json('/prices', utils.get_test_price()).json
-        uri = '/prices/%s' % (json['id'])
-        self.delete(uri)
-        response = self.get_json(uri, expect_errors=True)
+        url = '/prices/%s' % (json['id'])
+        self.delete(url)
+        response = self.get_json(url, expect_errors=True)
         self.assertEqual(response.status_int, 404)
         self.assertEqual(response.content_type, 'application/json')
         self.assertTrue(response.json['error_message'])

@@ -12,6 +12,7 @@ from koala.common import exception
 from koala.common.wsmeext import pecan as wsme_pecan
 from koala.openstack.common.gettextutils import _
 from koala.openstack.common import importutils
+from koala.openstack.common import timeutils
 from wsme import types as wtypes
 
 REQUIRED_PRICE_PROPERTIES = ('region', 'resource_type', 'unit_price')
@@ -256,7 +257,7 @@ class Event(base.APIBase):
     resource_name = wtypes.text
     resource_type = wtypes.text
     event_type = wtypes.text
-    event_time = datetime.datetime
+    event_time = wtypes.text
     tenant_id = wtypes.text
     region = wtypes.text
     # Different resources have different content, for instance,
@@ -270,7 +271,7 @@ class Event(base.APIBase):
             resource_name='volume01',
             resource_type='volume',
             event_type='create',
-            event_time=datetime.datetime.utcnow(),
+            event_time='2015-11-02T08:22:10:006498',
             tenant_id='7f13f2b17917463b9ee21aa92c4b36d6',
             region='bj',
             content={'size': 10}
@@ -302,6 +303,8 @@ class EventsController(rest.RestController):
             msg = _("Resource type must be in %s") % str(
                 REQUIRED_EVENT_PROPERTIES)
             raise exception.ResourceTypeInvalid(msg)
+
+        value['event_time'] = timeutils.parse_strtime(value['event_time'])
 
         return value
 

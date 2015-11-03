@@ -23,3 +23,28 @@ def get_test_price(**kw):
         'region': kw.get('region', 'regionOne')
     }
     return price
+
+
+def get_volume_price(**kw):
+    price = {
+        'resource_type': kw.get('resource_type', 'volume'),
+        'unit_price': kw.get('unit_price', 1),
+        'region': kw.get('region', 'regionOne')
+    }
+    return price
+
+
+def get_volume_event(**kw):
+    volume_event = {
+        'resource_id': kw.get('resource_id',
+                              'ea75b3e1-e3b6-4777-bc4e-ef6ea414ace2'),
+        'resource_name': kw.get('resource_name', 'volume01'),
+        'resource_type': kw.get('resource_type', 'volume'),
+        'event_type': kw.get('event_type', 'create'),
+        'event_time': kw.get('event_time', '2015-10-01T01:00:00.000000'),
+        'tenant_id': kw.get('tenant_id', '7f13f2b17917463b9ee21aa92c4b36d6'),
+        'region': kw.get('region', 'regionOne'),
+        'content': kw.get('content', {'size': 10})
+    }
+
+    return volume_event
