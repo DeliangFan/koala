@@ -80,15 +80,21 @@ class Instance(base.Resource):
         total_seconds = self.get_total_seconds(self.start_at, self.event_time)
         delta_time = total_seconds / 3600.0
 
+        pre_content = jsonutils.loads(self.exist_resource.content)
         if self.event_type == 'resize':
-            pre_content = jsonutils.loads(self.exist_resource.content)
             vcpu = pre_content.get('vcpu', 0)
             ram = pre_content.get('ram', 0)
             disk = pre_content.get('disk', 0)
         else:
-            vcpu = self.vcpu
-            ram = self.ram
-            disk = self.disk
+            if (self.vcpu != pre_content.get('vcpu', 0) or
+                self.ram != pre_content.get('ram', 0) or
+                self.disk != pre_content.get('disk', 0)):
+                # TBD(fandeliang)
+                # Log.warning("Miss resize event.")
+                pass
+            vcpu = min(self.vcpu, pre_content.get('vcpu', 0))
+            ram = min(self.ram, pre_content.get('ram', 0))
+            disk = min(self.disk, pre_content.get('disk', 0))
 
         previous_status = self.get_instance_previous_status()
 

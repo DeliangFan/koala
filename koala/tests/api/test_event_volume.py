@@ -315,6 +315,38 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(len(records), 1)
         self.assertEqual(int(records[0]['consumption']), 2400)
 
+    def test_create_exists_delete_with_missing_resize(self):
+        self.create_volume_price()
+
+        volume_event = utils.get_volume_event()
+        volume_event['event_time'] = '2015-10-01T01:00:00.000000'
+        volume_event['event_type'] = 'create'
+        self.post_json('/events', volume_event)
+
+        volume_event['event_time'] = '2015-10-11T01:00:00.000000'
+        # Missing resize event
+        volume_event['content']['size'] = 1000
+        volume_event['event_type'] = 'exists'
+        self.post_json('/events', volume_event)
+
+        url = '/resources/' + volume_event['resource_id']
+        res = self.get_json(url)
+        self.assertEqual(int(res['consumption']), 2400)
+
+        volume_event['event_time'] = '2015-10-21T01:00:00.000000'
+        volume_event['event_type'] = 'delete'
+        self.post_json('/events', volume_event)
+
+        url = '/resources/' + volume_event['resource_id']
+        res = self.get_json(url)
+        self.assertEqual(int(res['consumption']), 242400)
+
+        url = '/records/' + volume_event['resource_id']
+        records = self.get_json(url)
+        self.assertEqual(len(records), 2)
+        self.assertEqual(int(records[0]['consumption']), 2400)
+        self.assertEqual(int(records[1]['consumption']), 240000)
+
     def test_without_resource_id(self):
         self.create_volume_price()
 
