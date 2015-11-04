@@ -26,31 +26,34 @@ def get_test_price(**kw):
 
 
 def get_volume_price(**kw):
-    price = {
-        'resource_type': kw.get('resource_type', 'volume'),
-        'unit_price': kw.get('unit_price', 1),
-        'region': kw.get('region', 'regionOne')
-    }
+    price = get_test_price(**kw)
     return price
 
 
 def get_volume_snapshot_price(**kw):
-    price = get_volume_price(**kw)
+    price = get_test_price(**kw)
     price['resource_type'] = 'volume_snapshot'
 
     return price
 
 
 def get_image_price(**kw):
-    price = get_volume_price(**kw)
+    price = get_test_price(**kw)
     price['resource_type'] = 'image'
 
     return price
 
 
 def get_instance_snapshot_price(**kw):
-    price = get_volume_price(**kw)
+    price = get_test_price(**kw)
     price['resource_type'] = 'instance_snapshot'
+
+    return price
+
+
+def get_router_price(**kw):
+    price = get_test_price(**kw)
+    price['resource_type'] = 'router'
 
     return price
 
@@ -95,3 +98,12 @@ def get_instance_snapshot_event(**kw):
     instance_snapshot_event['resource_type'] = 'instance_snapshot'
 
     return instance_snapshot_event
+
+
+def get_router_event(**kw):
+    router_event = get_volume_event(**kw)
+    router_event['resource_name'] = 'router01'
+    router_event['resource_type'] = 'router'
+    router_event['content'] = {}
+
+    return router_event
