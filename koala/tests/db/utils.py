@@ -41,6 +41,13 @@ def get_volume_snapshot_price(**kw):
     return price
 
 
+def get_image_price(**kw):
+    price = get_volume_price(**kw)
+    price['resource_type'] = 'image'
+
+    return price
+
+
 def get_volume_event(**kw):
     volume_event = {
         'resource_id': kw.get('resource_id',
@@ -63,3 +70,12 @@ def get_volume_snapshot_event(**kw):
     volume_snapshot_event['resource_type'] = 'volume_snapshot'
 
     return volume_snapshot_event
+
+
+def get_image_event(**kw):
+    image_event = get_volume_event(**kw)
+    image_event['event_type'] = 'upload'
+    image_event['resource_name'] = 'image01'
+    image_event['resource_type'] = 'image'
+
+    return image_event
