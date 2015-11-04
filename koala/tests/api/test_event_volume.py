@@ -21,6 +21,7 @@ class TestVolumeEvent(base.FunctionalTest):
 
     def setUp(self):
         super(TestVolumeEvent, self).setUp()
+        self.create_volume_price()
 
     def tearDown(self):
         super(TestVolumeEvent, self).tearDown()
@@ -30,8 +31,6 @@ class TestVolumeEvent(base.FunctionalTest):
         return body['id']
 
     def test_post_create_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         self.post_json('/events', volume_event)
 
@@ -43,8 +42,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.get_json(url, expect_errors=True)
 
     def test_post_delete_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_type'] = 'delete'
         self.post_json('/events', volume_event)
@@ -56,8 +53,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.get_json(url, expect_errors=True)
 
     def test_post_exists_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_type'] = 'exists'
         self.post_json('/events', volume_event)
@@ -70,8 +65,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.get_json(url, expect_errors=True)
 
     def test_post_resize_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_type'] = 'resize'
         self.post_json('/events', volume_event)
@@ -84,8 +77,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.get_json(url, expect_errors=True)
 
     def test_create_and_delete_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         self.post_json('/events', volume_event)
@@ -105,8 +96,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(int(records[0]['consumption']), 2400)
 
     def test_create_and_exist_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         self.post_json('/events', volume_event)
@@ -126,8 +115,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(int(records[0]['consumption']), 2400)
 
     def test_exists_and_delete_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         volume_event['event_type'] = 'exists'
@@ -148,8 +135,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(int(records[0]['consumption']), 2400)
 
     def test_create_and_resize_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         volume_event['event_type'] = 'create'
@@ -171,8 +156,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(int(records[0]['consumption']), 2400)
 
     def test_create_exists_delete_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         volume_event['event_type'] = 'create'
@@ -207,8 +190,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(int(records[1]['consumption']), 2400)
 
     def test_create_resize_delete_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         volume_event['event_type'] = 'create'
@@ -244,8 +225,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(int(records[1]['consumption']), 240000)
 
     def test_exists_resize_delete_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         volume_event['event_type'] = 'exists'
@@ -281,8 +260,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(int(records[1]['consumption']), 240000)
 
     def test_create_delete_create_event_success(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         volume_event['event_type'] = 'create'
@@ -316,8 +293,6 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(int(records[0]['consumption']), 2400)
 
     def test_create_exists_delete_with_missing_resize(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         volume_event['event_type'] = 'create'
@@ -348,29 +323,21 @@ class TestVolumeEvent(base.FunctionalTest):
         self.assertEqual(int(records[1]['consumption']), 240000)
 
     def test_without_resource_id(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event.pop('resource_id')
         self.post_json('/events', volume_event, expect_errors=True)
 
     def test_without_content(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event.pop('content')
         self.post_json('/events', volume_event, expect_errors=True)
 
     def test_without_size_in_content(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['content'].pop('size')
         self.post_json('/events', volume_event, expect_errors=True)
 
     def test_with_wrong_size_in_content(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['content']['size'] = 'size'
         self.post_json('/events', volume_event, expect_errors=True)
@@ -379,15 +346,11 @@ class TestVolumeEvent(base.FunctionalTest):
         self.post_json('/events', volume_event, expect_errors=True)
 
     def test_wrong_event_type(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_type'] = 'wrong_event_type'
         self.post_json('/events', volume_event, expect_errors=True)
 
     def test_with_wrong_event_time(self):
-        self.create_volume_price()
-
         volume_event = utils.get_volume_event()
         volume_event['event_time'] = '2015-10-01T01:00:00.000000'
         self.post_json('/events', volume_event)
