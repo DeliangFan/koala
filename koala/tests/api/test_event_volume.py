@@ -27,8 +27,7 @@ class TestVolumeEvent(base.FunctionalTest):
         super(TestVolumeEvent, self).tearDown()
 
     def create_volume_price(self):
-        body = self.post_json('/prices', utils.get_volume_price()).json
-        return body['id']
+        self.post_json('/prices', utils.get_volume_price()).json
 
     def test_post_create_event_success(self):
         volume_event = utils.get_volume_event()
