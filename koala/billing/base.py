@@ -97,6 +97,9 @@ class Resource(object):
         res['resource_type'] = self.resource_type
         res['created_at'] = self.event_time
 
+        if self.event_type == 'power_off':
+            res['status'] = 'shutoff'
+
         # Convert json to string.
         res['content'] = jsonutils.dumps(self.content)
 
@@ -191,8 +194,12 @@ class Resource(object):
             elif self.event_type == 'delete':
                 self.audit_delete()
             elif self.event_type == 'power_off':
+                # Note(fandeliang) If the previous status is
+                # shutoff, Log.warning()
                 self.audit_power_off()
             elif self.event_type == 'power_on':
+                # Note(fandeliang) If the previous status is
+                # not shutoff, Log.warning()
                 self.audit_power_on()
         else:
             if self.event_type in ('create', 'upload'):
