@@ -86,8 +86,7 @@ Any contributions will be appreciate.
 To run the test, you only to run the tox as following.
     
         [root@controller koala]# tox -epy26
-        Ran 125 (+1) tests in 2.531s (+0.100s)
-        PASSED (id=1)
+        Ran 125 tests in 2.531s (+0.100s)
         Slowest Tests
         Test id                                                                                                Runtime (s)
         -----------------------------------------------------------------------------------------------------  -----------
