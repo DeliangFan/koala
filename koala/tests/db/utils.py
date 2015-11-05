@@ -58,6 +58,27 @@ def get_router_price(**kw):
     return price
 
 
+def get_vcpu_price(**kw):
+    price = get_test_price(**kw)
+    price['resource_type'] = 'vcpu'
+
+    return price
+
+
+def get_ram_price(**kw):
+    price = get_test_price(**kw)
+    price['resource_type'] = 'ram'
+
+    return price
+
+
+def get_disk_price(**kw):
+    price = get_test_price(**kw)
+    price['resource_type'] = 'disk'
+
+    return price
+
+
 def get_volume_event(**kw):
     volume_event = {
         'resource_id': kw.get('resource_id',
@@ -107,3 +128,14 @@ def get_router_event(**kw):
     router_event['content'] = {}
 
     return router_event
+
+
+def get_instance_event(**kw):
+    instance_event = get_volume_event(**kw)
+    instance_event['resource_name'] = 'instance01'
+    instance_event['resource_type'] = 'instance'
+    instance_event['content'] = {'vcpu': 1,
+                                 'disk': 1,
+                                 'ram': 1}
+
+    return instance_event
