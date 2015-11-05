@@ -86,26 +86,26 @@ Any contributions will be appreciate.
 To run the test, you only to run the tox as following.
     
         [root@controller koala]# tox -epy26
-        py26 develop-inst-noop: /root/koala
-        Ran 28 tests in 0.650s (+0.013s)
-        PASSED (id=100)
+        Ran 125 (+1) tests in 2.531s (+0.100s)
+        PASSED (id=1)
         Slowest Tests
-        Test id                                                                                     Runtime (s)
-        ------------------------------------------------------------------------------------------  -----------
-        koala.tests.api.test_base.TestBase.test_bad_uri                                                  0.129
-        koala.tests.api.test_base.TestBase.test_api_setup                                                0.123
-        koala.tests.api.test_event_volume.TestVolumeEvent.test_create_resize_delete_event_success        0.106
-        koala.tests.api.test_event_volume.TestVolumeEvent.test_exists_resize_delete_event_success        0.096
-        koala.tests.api.test_event_volume.TestVolumeEvent.test_create_exists_delete_with_missing_resize  0.080
-        koala.tests.api.test_event_volume.TestVolumeEvent.test_create_exists_delete_event_success        0.079
-        koala.tests.api.test_event_volume.TestVolumeEvent.test_exists_and_delete_event_success           0.068
-        koala.tests.api.test_event_volume.TestVolumeEvent.test_create_delete_create_event_success        0.055
-        koala.tests.api.test_event_volume.TestVolumeEvent.test_create_and_delete_event_success           0.053
-        koala.tests.api.test_event_volume.TestVolumeEvent.test_create_and_exist_event_success            0.053
+        Test id                                                                                                Runtime (s)
+        -----------------------------------------------------------------------------------------------------  -----------
+        koala.tests.api.test_base.TestBase.test_bad_uri                                                        0.126
+        koala.tests.api.test_base.TestBase.test_api_setup                                                      0.118
+        koala.tests.api.test_event_volume_snapshot.TestVolumeSnapshotEvent.test_exists_delete_event_success    0.080
+        koala.tests.api.test_event_instance.TestInstanceEvent.test_exists_resize_delete_event_success          0.079
+        koala.tests.api.test_event_instance.TestInstanceEvent.test_create_power_off_power_on_event_success     0.079
+        koala.tests.api.test_event_instance.TestInstanceEvent.test_power_off_resize_vcpu_delete_event_success  0.076
+        koala.tests.api.test_event_instance.TestInstanceEvent.test_create_power_off_delete_event_success       0.074
+        koala.tests.api.test_event_instance.TestInstanceEvent.test_create_exists_delete_with_missing_resize    0.074
+        koala.tests.api.test_event_instance.TestInstanceEvent.test_power_off_resize_disk_delete_event_success  0.072
+        koala.tests.api.test_event_instance.TestInstanceEvent.test_create_exists_delete_event_success          0.071
         py26 runtests: commands[2] | flake8
-        ________________________________________ summary ___________________________________________
+        __________________________________________ summary ___________________________________________
         py26: commands succeeded
         congratulations :)
+
 ## Install
 You can install koala from python source or RPM.
 To install from python source, just run
