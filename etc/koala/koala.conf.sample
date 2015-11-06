@@ -1,16 +1,6 @@
 [DEFAULT]
 
 #
-# Options defined in koala.api
-#
-
-# IP for the Ironic API server to bind to (string value)
-#koala_api_bind_ip=0.0.0.0
-
-# The port for the Ironic API server (integer value)
-#koala_api_port=8080
-
-#
 # Options defined in koala.cmd.api
 #
 
@@ -33,7 +23,7 @@
 
 # Directory where the koala python module is installed (string
 # value)
-#pybasedir=/usr/lib/python/site-packages/koala
+#pybasedir=/usr/lib/python/site-packages
 
 # Directory where koala binaries are installed (string value)
 #bindir=$pybasedir/bin
