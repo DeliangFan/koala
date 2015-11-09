@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 #
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
@@ -18,26 +17,49 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+
 """
 Run storage database migration.
 """
 import sys
 
 from koala.db import migration
+from koala.openstack.common.gettextutils import _
+from koala.openstack.common import log
 from oslo.config import cfg
 
-CONF = cfg.CONF
 
-CONF.import_opt('connection',
-                'koala.openstack.common.db.sqlalchemy.session',
-                group='database')
+def add_command_parsers(subparsers):
+    parser = subparsers.add_parser('db_version')
 
-CONF.import_opt('sqlite_db',
-                'koala.openstack.common.db.sqlalchemy.session')
+    parser = subparsers.add_parser('db_sync')
+    parser.add_argument('version', nargs='?')
+    parser.add_argument('current_version', nargs='?')
+
+    parser = subparsers.add_parser('purge_deleted')
+    parser.add_argument('age', nargs='?', default='90',
+                        help=_('How long to preserve deleted data.'))
+    parser.add_argument(
+        '-g', '--granularity', default='days',
+        choices=['days', 'hours', 'minutes', 'seconds'],
+        help=_('Granularity to use for age argument, defaults to days.'))
+
+command_opt = cfg.SubCommandOpt('command',
+                                title='Commands',
+                                help='Show available commands.',
+                                handler=add_command_parsers)
 
 
 def main():
-    version = None
-    if 'db_sync' in sys.argv and len(sys.argv) > 2:
-        version = sys.argv[2]
-    migration.db_sync(version=version)
+    cfg.CONF.register_cli_opt(command_opt)
+    try:
+        cfg.CONF(sys.argv[1:], project='koala', prog='koala-manage')
+        log.setup('koala')
+    except RuntimeError as e:
+        sys.exit("ERROR: %s" % e)
+
+    version = None or sys.argv[2]
+    try:
+        migration.db_sync(version=version)
+    except RuntimeError as e:
+        sys.exit("ERROR: %s" % e)
